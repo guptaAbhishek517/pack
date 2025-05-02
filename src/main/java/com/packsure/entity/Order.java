@@ -37,9 +37,7 @@ public class Order {
 	
 	private LocalDateTime dispatchedAt;
 
-//	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-//	@JsonIgnore
-//	private Barcode barcode;
+	private String OrderType;
 	
 	@OneToOne
 	@JoinColumn(name = "barcode_pool_id")
@@ -52,6 +50,11 @@ public class Order {
 	
 	@Column(nullable = false, unique = true)
 	private String barcodeNumber;
+	
+	
+	@OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
+	@JsonManagedReference
+	private PaymentInfo paymentInfo;
 
 	public Long getId() {
 		return id;
@@ -116,14 +119,6 @@ public class Order {
 	public void setItems(List<OrderItem> items) {
 		this.items = items;
 	}
-
-//	public Barcode getBarcode() {
-//		return barcode;
-//	}
-
-//	public void setBarcode(Barcode barcode) {
-//		this.barcode = barcode;
-//	}	
 	
 	public BarcodePool getBarcodepool() {
 		return barcodepool;
@@ -149,8 +144,6 @@ public class Order {
 		this.dispatchedAt = dispatchedAt;
 	}
 	
-	
-
 	public String getBarcodeNumber() {
 		return barcodeNumber;
 	}
@@ -158,10 +151,27 @@ public class Order {
 	public void setBarcodeNumber(String barcodeNumber) {
 		this.barcodeNumber = barcodeNumber;
 	}
+	
+	public String getOrderType() {
+		return OrderType;
+	}
+
+	public void setOrderType(String orderType) {
+		OrderType = orderType;
+	}
+
+	public PaymentInfo getPaymentInfo() {
+		return paymentInfo;
+	}
+
+	public void setPaymentInfo(PaymentInfo paymentInfo) {
+		this.paymentInfo = paymentInfo;
+	}
 
 	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
 			LocalDateTime orderDate, String status, List<OrderItem> items,BarcodePool barcodepool,
-			LocalDateTime packedAt, LocalDateTime dispatchedAt, String barcodeNumber) {
+			LocalDateTime packedAt, LocalDateTime dispatchedAt, String barcodeNumber,
+			String OrderType, PaymentInfo paymentInfo) {
 		super();
 		this.id = id;
 		this.customerName = customerName;
@@ -175,7 +185,8 @@ public class Order {
 		this.dispatchedAt = dispatchedAt;
 		this.packedAt = packedAt;
 		this.barcodeNumber = barcodeNumber;
-	
+		this.OrderType = OrderType;
+		this.paymentInfo = paymentInfo;	
 	}
 
 	public Order() {

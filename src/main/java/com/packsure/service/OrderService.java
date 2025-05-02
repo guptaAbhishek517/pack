@@ -23,7 +23,6 @@ import com.packsure.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 
 import com.packsure.dto.OrderDTO;
-//import com.packsure.entity.Barcode;
 
 @Service
 public class OrderService {
@@ -34,9 +33,7 @@ public class OrderService {
 	@Autowired
 	private BarcodePoolRepository barcodepoolRepo;
 	
-	
-//	@Autowired
-//	private BarcodeRepository barcodeRepository;
+
 
 	public OrderDTO getOrderItemsByOrderId(Long orderId) {
 		
@@ -97,23 +94,7 @@ public class OrderService {
 
 	    // Step 3: Create new Barcode from the pool
 	    order.setBarcodeNumber(pool.getBarcodeNumber());
-	    
-//	    barcode.setBarcodeNumber(pool.getBarcodeNumber());
-//	    barcode.setBarcodeImagePath(pool.getBarcodeImagePath());
-//	    barcode.setPackedBy("system");
-//	    barcode.setBranch("xyz");
-//	    barcode.setCompanyId(1L);
-//	    barcode.setPackedAt(LocalDateTime.now());
-//	    barcode.setStatus("NOT_PACKED");
-//	    barcode.setOrder(order); // associate the barcode with the order
-//
-//	    // Step 4: Save the Barcode
-//	    barcodeRepository.save(barcode);
-//
-//	    // Step 5: Assign Barcode and BarcodePool to Order
-//	    order.setBarcode(barcode);
-	    
-	    
+    
 	    order.setBarcodepool(pool);
 
 	    // Step 6: Save Order (cascades OrderItems)
@@ -153,10 +134,7 @@ public class OrderService {
 	
 	
 	 public Order getOrderByBarcode(String barcode) {
-//	        Barcode barcodeEntity = barcodeRepository.findByBarcodeNumber(barcode)
-//	            .orElseThrow(() -> new RuntimeException("Barcode not found"));
-	        
-	       
+       
 	        Order order = orderRepository.findByBarcodeNumber(barcode);
 	        		
 	        
@@ -168,12 +146,7 @@ public class OrderService {
 	    }
 
 	 public void markOrderAsPacked(String barcode) {
-//		     Barcode barcodeEntity = barcodeRepository.findByBarcodeNumber(barcode)
-//		            .orElseThrow(() -> new RuntimeException("Barcode not found"));
-		        
 		 
-		        
-				 
 	     	 Order order = orderRepository.findByBarcodeNumber(barcode);
 
 	       
@@ -189,9 +162,7 @@ public class OrderService {
 	 
 
 	public void markOrderAsDispatched(String barcode) {
-//		 Barcode barcodeEntity = barcodeRepository.findByBarcodeNumber(barcode)
-//				 .orElseThrow(()-> new RuntimeException("Barcode not found"));
-		 
+	 
 		 Order order = orderRepository.findByBarcodeNumber(barcode);
 		 
 		 if (order == null) {

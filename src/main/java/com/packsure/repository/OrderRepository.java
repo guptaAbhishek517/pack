@@ -11,6 +11,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	Order findByBarcodeNumber(String barcode);
 
-	
-
 }

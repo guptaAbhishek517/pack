@@ -21,8 +21,7 @@ public class BarcodePool {
     private boolean isUsed = false;
     
     private String barcodeImagePath;
-    
-    
+       
     @OneToOne
 	@JoinColumn(name = "order_id", unique = true)
 	private Order order; 

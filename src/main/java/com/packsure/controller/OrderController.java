@@ -42,13 +42,7 @@ public class OrderController {
 
 	}
 
-//	@GetMapping("/all")
-//	public List<OrderDTO> getAllOrders() {
-//		return orderService.getAllOrders(); // Get the orders from the service layer
-//	}
-	
-	
-  
+	 
 	//api endpoint to get orders by barcodeNumber
 	  @GetMapping("/by-barcode/{barcode}")
 	    public ResponseEntity<Order> getOrderByBarcode(@PathVariable String barcode) {

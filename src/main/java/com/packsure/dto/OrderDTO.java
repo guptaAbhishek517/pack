@@ -20,6 +20,8 @@ public class OrderDTO {
 	private LocalDateTime dispatchedAt;
 	
 	private String barcodeNumber;
+	
+	private String OrderType;
 
 	public Long getOrderId() {
 		return orderId;
@@ -108,9 +110,13 @@ public class OrderDTO {
 	public void setBarcodeNumber(String barcodeNumber) {
 		this.barcodeNumber = barcodeNumber;
 	}
-	
-	
-	
-	
 
+	public String getOrderType() {
+		return OrderType;
+	}
+
+	public void setOrderType(String orderType) {
+		OrderType = orderType;
+	}
+	
 }
