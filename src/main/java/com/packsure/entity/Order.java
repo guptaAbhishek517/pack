@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "OrderDetails")
 public class Order {
 
-	
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String customerName;

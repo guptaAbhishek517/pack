@@ -75,21 +75,10 @@ public class OrderController {
 	   
 	 //api endpoint to make orderID dispatched
 	    @PutMapping("/{barcode}/dispatch")
-	    public ResponseEntity<?> markOrderAsDispatched(@PathVariable String barcode) {
-	    	  try {
-	    		      	        
-	    		  Map<String, String> markOrderAsDispatched = orderService.markOrderAsDispatched(barcode);
-	    		  return ResponseEntity.ok(markOrderAsDispatched);
-
-	    	    } catch (IllegalStateException e) {
-	    	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {{
-	    	            put("error", e.getMessage());
-	    	        }});
-	    	    } catch (RuntimeException e) {
-	    	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<String, String>() {{
-	    	            put("error", "Order not found.");
-	    	        }});
-	    	    }
+	    public ResponseEntity<Map<String, String>> markOrderAsDispatched(@PathVariable String barcode) {
+	        Map<String, String> result = orderService.markOrderAsDispatched(barcode);
+	        return ResponseEntity.ok(result); 
 	    }
+
 	    
 }

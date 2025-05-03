@@ -17,6 +17,7 @@ import com.packsure.dto.OrderItemDTO;
 import com.packsure.entity.BarcodePool;
 import com.packsure.entity.Order;
 import com.packsure.entity.OrderItem;
+import com.packsure.exception.BarcodeAlreadyDispatchedException;
 import com.packsure.exception.BarcodeAlreadyPackedException;
 import com.packsure.exception.ResourceNotFoundException;
 import com.packsure.repository.BarcodePoolRepository;
@@ -32,19 +33,17 @@ public class OrderService {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
+
 	@Autowired
 	private BarcodePoolRepository barcodepoolRepo;
-	
-
 
 	public OrderDTO getOrderItemsByOrderId(Long orderId) {
-		
+
 		Order order = orderRepository.findById(orderId)
 				.orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
 		OrderDTO dto = new OrderDTO();
-		dto.setOrderId(order.getId());
+		dto.setOrderId(order.getBarcodeNumber());
 		dto.setCustomerName(order.getCustomerName());
 		dto.setCustomerEmail(order.getCustomerEmail());
 		dto.setCustomerPhone(order.getCustomerPhone());
@@ -67,133 +66,127 @@ public class OrderService {
 		return dto;
 
 	}
-	
-	//create order and assign the avilable barcode 
-	
+
+	// create order and assign the avilable barcode
+
 	@Transactional
 	public Order createOrderWithItems(OrderDTO orderDto) {
-	    Order order = new Order();
-	    order.setCustomerName(orderDto.getCustomerName());
-	    order.setCustomerAddress(orderDto.getCustomerAddress());
-	    order.setCustomerPhone(orderDto.getCustomerPhone());
-	    order.setOrderDate(LocalDateTime.now());
-	    order.setStatus(orderDto.getStatus());
-	   
+		Order order = new Order();
+		order.setCustomerName(orderDto.getCustomerName());
+		order.setCustomerAddress(orderDto.getCustomerAddress());
+		order.setCustomerPhone(orderDto.getCustomerPhone());
+		order.setOrderDate(LocalDateTime.now());
+		order.setStatus(orderDto.getStatus());
 
-	    // Step 1: Create OrderItems
-	    List<OrderItem> orderItems = orderDto.getItems().stream().map(itemDto -> {
-	        OrderItem item = new OrderItem();
-	        item.setItemName(itemDto.getItemName());
-	        item.setQuantity(itemDto.getQuantity());
-	        item.setPricePerUnit(itemDto.getPricePerUnit());
-	        item.setTotalPrice(itemDto.getQuantity() * itemDto.getPricePerUnit());
-	        item.setOrder(order);
-	        return item;
-	    }).collect(Collectors.toList());
-	    order.setItems(orderItems);
+		// Step 1: Create OrderItems
+		List<OrderItem> orderItems = orderDto.getItems().stream().map(itemDto -> {
+			OrderItem item = new OrderItem();
+			item.setItemName(itemDto.getItemName());
+			item.setQuantity(itemDto.getQuantity());
+			item.setPricePerUnit(itemDto.getPricePerUnit());
+			item.setTotalPrice(itemDto.getQuantity() * itemDto.getPricePerUnit());
+			item.setOrder(order);
+			return item;
+		}).collect(Collectors.toList());
+		order.setItems(orderItems);
 
-	    // Step 2: Get an unused BarcodePool entry
-	    BarcodePool pool = barcodepoolRepo.findFirstByIsUsedFalse()
-	        .orElseThrow(() -> new RuntimeException("No available barcodes in pool"));
+		// Step 2: Get an unused BarcodePool entry
+		BarcodePool pool = barcodepoolRepo.findFirstByIsUsedFalse()
+				.orElseThrow(() -> new RuntimeException("No available barcodes in pool"));
 
-	    // Step 3: Create new Barcode from the pool
-	    order.setBarcodeNumber(pool.getBarcodeNumber());
-    
-	    order.setBarcodepool(pool);
+		// Step 3: Create new Barcode from the pool
+		order.setBarcodeNumber(pool.getBarcodeNumber());
 
-	    // Step 6: Save Order (cascades OrderItems)
-	    Order savedOrder = orderRepository.save(order);
+		order.setBarcodepool(pool);
 
-	    // Step 7: Mark BarcodePool as used
-	    pool.setUsed(true);
-	    barcodepoolRepo.save(pool);
+		// Step 6: Save Order (cascades OrderItems)
+		Order savedOrder = orderRepository.save(order);
 
-	    return savedOrder;
+		// Step 7: Mark BarcodePool as used
+		pool.setUsed(true);
+		barcodepoolRepo.save(pool);
+
+		return savedOrder;
 	}
 
 	public Page<OrderDTO> getAllOrders(Pageable pageable) {
-	    Page<Order> ordersPage = orderRepository.findAll(pageable); 
+		Page<Order> ordersPage = orderRepository.findAll(pageable);
 
-	    return ordersPage.map(order -> {
-	        OrderDTO orderDTO = new OrderDTO();
-	        orderDTO.setOrderId(order.getId());
-	        orderDTO.setOrderDate(order.getOrderDate());
-	        orderDTO.setPaymentType(order.getPaymentType());
-	        orderDTO.setCustomerName(order.getCustomerName());
-	        orderDTO.setCustomerAddress(order.getCustomerAddress());
-	        orderDTO.setCustomerPhone(order.getCustomerPhone());
-	        orderDTO.setStatus(order.getStatus());
-	        orderDTO.setPackedAt(order.getPackedAt());
-	        orderDTO.setDispatchedAt(order.getDispatchedAt());
-	        orderDTO.setOrderSource(order.getOrderSource());
-	        orderDTO.setOrderStatus(order.getOrderStatus());
-	        orderDTO.setDeliverySource(order.getDeliverySource());
-	        
-	        
-	     // Directly fetch barcodeNumber from BarcodePool (One-to-One relationship)
-	        if (order.getBarcodepool() != null) {
-	            orderDTO.setBarcodeNumber(order.getBarcodepool().getBarcodeNumber());
-	        } else {
-	            orderDTO.setBarcodeNumber("--"); // fallback if BarcodePool is not associated
-	        }
-	        return orderDTO;
-	    });
+		return ordersPage.map(order -> {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setOrderId(order.getBarcodeNumber());
+			orderDTO.setOrderDate(order.getOrderDate());
+			orderDTO.setPaymentType(order.getPaymentType());
+			orderDTO.setCustomerName(order.getCustomerName());
+			orderDTO.setCustomerAddress(order.getCustomerAddress());
+			orderDTO.setCustomerPhone(order.getCustomerPhone());
+			orderDTO.setStatus(order.getStatus());
+			orderDTO.setPackedAt(order.getPackedAt());
+			orderDTO.setDispatchedAt(order.getDispatchedAt());
+			orderDTO.setOrderSource(order.getOrderSource());
+			orderDTO.setOrderStatus(order.getOrderStatus());
+			orderDTO.setDeliverySource(order.getDeliverySource());
+			return orderDTO;
+		});
 	}
-	
-	
-	
-	 public Order getOrderByBarcode(String barcode) {
-       
-	        Order order = orderRepository.findByBarcodeNumber(barcode);
-	        		
-	        
-	        if ("PACKED".equalsIgnoreCase(order.getStatus())) {
-	            throw new BarcodeAlreadyPackedException("Order is already packed for this barcode.");
-	        }
 
-	        return order;  // Fetch the order linked to the barcode
-	    }
+	public Order getOrderByBarcode(String barcode) {
 
-	 public void markOrderAsPacked(String barcode) {
-		 
-	     	 Order order = orderRepository.findByBarcodeNumber(barcode);
+		Order order = orderRepository.findByBarcodeNumber(barcode);
 
-	       
-	        if ("PACKED".equalsIgnoreCase(order.getStatus())) {
-	            throw new IllegalStateException("Order is already packed");
-	        }
-
-	        order.setStatus("PACKED");
-	        order.setPackedAt(LocalDateTime.now());
-	        orderRepository.save(order);
-	    }
-	 
-	 
-
-	public Map<String,String> markOrderAsDispatched(String barcode) {
-	 
-		 Order order = orderRepository.findByBarcodeNumber(barcode);
-		 
-		 if (order == null) {
-		        throw new RuntimeException("Order not found for the barcode: " + barcode);
-		    }
-		 
-		 String currentStatus = order.getStatus();
-		 
-		 if("DISPATCHED".equalsIgnoreCase(order.getStatus())) {
-			 throw new IllegalStateException("Order is already dispatched");
-		 }
-		 
-		    if ("PACKED".equalsIgnoreCase(currentStatus)) {
-		        order.setStatus("DISPATCHED");
-		        order.setDispatchedAt(LocalDateTime.now());
-		        orderRepository.save(order);
-		        Map<String, String> response = new HashMap<>();	
-		        response.put("status", order.getStatus());
-		        return response;
-		    } else {
-		        throw new IllegalStateException("Order status must be 'PACKED' to dispatch. Current: " + currentStatus);
-		    }
+		if ("PACKED".equalsIgnoreCase(order.getStatus())) {
+			throw new BarcodeAlreadyPackedException("Order is already packed for this barcode.");
+		}
 		
+		if("DISPATCHED".equalsIgnoreCase(order.getStatus())){
+			throw new BarcodeAlreadyPackedException("Order is already dispatched for this barcode.");
+		}
+
+		return order; // Fetch the order linked to the barcode
 	}
+
+	public void markOrderAsPacked(String barcode) {
+
+		Order order = orderRepository.findByBarcodeNumber(barcode);
+
+		if ("PACKED".equalsIgnoreCase(order.getStatus())) {
+			throw new IllegalStateException("Order is already packed");
+		}
+
+		order.setStatus("PACKED");
+		order.setPackedAt(LocalDateTime.now());
+		orderRepository.save(order);
+	}
+
+	public Map<String, String> markOrderAsDispatched(String barcode) {
+	    Map<String, String> response = new HashMap<>();
+
+	    Order order = orderRepository.findByBarcodeNumber(barcode);
+	    if (order == null) {
+	        response.put("status", "NOT_FOUND");
+	        response.put("message", "Order not found for barcode: " + barcode);
+	        return response;
+	    }
+
+	    String currentStatus = order.getStatus();
+	    
+		if("DISPATCHED".equalsIgnoreCase(order.getStatus())){
+			throw new BarcodeAlreadyDispatchedException("Order is already dispatched for this barcode.");
+		}
+
+	    if ("PACKED".equalsIgnoreCase(currentStatus)) {
+	        order.setStatus("DISPATCHED");
+	        order.setDispatchedAt(LocalDateTime.now());
+	        orderRepository.save(order);
+
+	        response.put("status", "DISPATCHED");
+	        response.put("message", "Order dispatched successfully.");
+	        return response;
+	    }
+
+	    response.put("status", "INVALID_STATUS");
+	    response.put("message", "Order must be in 'PACKED' status to dispatch. Current status: " + currentStatus);
+	    return response;
+	}
+
 }

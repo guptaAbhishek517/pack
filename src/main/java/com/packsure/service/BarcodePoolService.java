@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.packsure.entity.BarcodePool;
+import com.packsure.entity.Order;
 import com.packsure.exception.BarcodeNotFoundException;
 import com.packsure.exception.NoAvailableBarcodeException;
 import com.packsure.repository.BarcodePoolRepository;
+import com.packsure.repository.OrderRepository;
 import com.packsure.utility.BarcodeGenerator;
 
 @Service
@@ -19,6 +21,9 @@ public class BarcodePoolService {
 
 	@Autowired
 	private BarcodePoolRepository barcodePoolRepository;
+	
+	@Autowired
+	private OrderRepository orderRepo;
 
 	public List<String> getAvailableBarcodes() {
 		return barcodePoolRepository.findAll().stream().filter(bp -> !bp.isUsed()).map(BarcodePool::getBarcodeNumber)
@@ -57,7 +62,7 @@ public class BarcodePoolService {
 
 				String filePath = BarcodeGenerator.generateBarcodeImage(barcodeNumber, uploadBarcodeImage);
 
-				barcodePool.setBarcodeImagePath(filePath);
+//				barcodePool.setBarcodeImagePath(filePath);
 
 				barcodePoolRepository.save(barcodePool);
 
@@ -70,7 +75,7 @@ public class BarcodePoolService {
 	}
 
 	public List<String> getUsedBarcodes() {
-		return barcodePoolRepository.findAll().stream().filter(bp -> bp.isUsed()).map(BarcodePool::getBarcodeNumber)
+		return orderRepo.findAll().stream().filter(bp -> bp.getStatus().equalsIgnoreCase("Pending")).map(Order::getBarcodeNumber)
 				.collect(Collectors.toList());
 	}
 }
