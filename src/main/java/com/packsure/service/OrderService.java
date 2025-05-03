@@ -1,13 +1,16 @@
 package com.packsure.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.packsure.dto.OrderItemDTO;
@@ -48,6 +51,7 @@ public class OrderService {
 		dto.setCustomerAddress(order.getCustomerAddress());
 		dto.setOrderDate(order.getOrderDate());
 		dto.setStatus(order.getStatus());
+		dto.setStatus(order.getOrderStatus());
 
 		List<OrderItemDTO> items = order.getItems().stream().map(item -> {
 			OrderItemDTO itemDTO = new OrderItemDTO();
@@ -113,12 +117,17 @@ public class OrderService {
 	    return ordersPage.map(order -> {
 	        OrderDTO orderDTO = new OrderDTO();
 	        orderDTO.setOrderId(order.getId());
+	        orderDTO.setOrderDate(order.getOrderDate());
+	        orderDTO.setPaymentType(order.getPaymentType());
 	        orderDTO.setCustomerName(order.getCustomerName());
 	        orderDTO.setCustomerAddress(order.getCustomerAddress());
 	        orderDTO.setCustomerPhone(order.getCustomerPhone());
 	        orderDTO.setStatus(order.getStatus());
 	        orderDTO.setPackedAt(order.getPackedAt());
 	        orderDTO.setDispatchedAt(order.getDispatchedAt());
+	        orderDTO.setOrderSource(order.getOrderSource());
+	        orderDTO.setOrderStatus(order.getOrderStatus());
+	        orderDTO.setDeliverySource(order.getDeliverySource());
 	        
 	        
 	     // Directly fetch barcodeNumber from BarcodePool (One-to-One relationship)
@@ -161,7 +170,7 @@ public class OrderService {
 	 
 	 
 
-	public void markOrderAsDispatched(String barcode) {
+	public Map<String,String> markOrderAsDispatched(String barcode) {
 	 
 		 Order order = orderRepository.findByBarcodeNumber(barcode);
 		 
@@ -179,6 +188,9 @@ public class OrderService {
 		        order.setStatus("DISPATCHED");
 		        order.setDispatchedAt(LocalDateTime.now());
 		        orderRepository.save(order);
+		        Map<String, String> response = new HashMap<>();	
+		        response.put("status", order.getStatus());
+		        return response;
 		    } else {
 		        throw new IllegalStateException("Order status must be 'PACKED' to dispatch. Current: " + currentStatus);
 		    }

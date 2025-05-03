@@ -14,7 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "OrderDetails")
 public class Order {
 
-	@Id
+	
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
@@ -48,13 +48,21 @@ public class Order {
 	@JsonManagedReference
 	private List<OrderItem> items = new ArrayList<>();
 	
+	@Id
 	@Column(nullable = false, unique = true)
 	private String barcodeNumber;
 	
+	private String orderStatus;
 	
-	@OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
-	@JsonManagedReference
-	private PaymentInfo paymentInfo;
+	private String orderSource;
+	
+	private String deliverySource;
+	
+//	@OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
+//	@JsonManagedReference
+//	private PaymentInfo paymentInfo;
+	
+	private String paymentType;
 
 	public Long getId() {
 		return id;
@@ -159,19 +167,57 @@ public class Order {
 	public void setOrderType(String orderType) {
 		OrderType = orderType;
 	}
+	
+	
+	
+	
+	
+	
+//
+//	public PaymentInfo getPaymentInfo() {
+//		return paymentInfo;
+//	}
+//
+//	public void setPaymentInfo(PaymentInfo paymentInfo) {
+//		this.paymentInfo = paymentInfo;
+//	}
 
-	public PaymentInfo getPaymentInfo() {
-		return paymentInfo;
+	public String getDeliverySource() {
+		return deliverySource;
 	}
 
-	public void setPaymentInfo(PaymentInfo paymentInfo) {
-		this.paymentInfo = paymentInfo;
+	public void setDeliverySource(String deliverySource) {
+		this.deliverySource = deliverySource;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public String getOrderSource() {
+		return orderSource;
+	}
+
+	public void setOrderSource(String orderSource) {
+		this.orderSource = orderSource;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
 			LocalDateTime orderDate, String status, List<OrderItem> items,BarcodePool barcodepool,
-			LocalDateTime packedAt, LocalDateTime dispatchedAt, String barcodeNumber,
-			String OrderType, PaymentInfo paymentInfo) {
+			LocalDateTime packedAt, LocalDateTime dispatchedAt, String barcodeNumber,String orderStatus,
+			String OrderType, String orderSource, String paymentType, String deliverySource) {
 		super();
 		this.id = id;
 		this.customerName = customerName;
@@ -186,7 +232,11 @@ public class Order {
 		this.packedAt = packedAt;
 		this.barcodeNumber = barcodeNumber;
 		this.OrderType = OrderType;
-		this.paymentInfo = paymentInfo;	
+		this.orderStatus = orderStatus;
+		this.orderSource = orderSource;
+		this.paymentType = paymentType;
+		this.deliverySource = deliverySource;
+//		this.paymentInfo = paymentInfo;	
 	}
 
 	public Order() {

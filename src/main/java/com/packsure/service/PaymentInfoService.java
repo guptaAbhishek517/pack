@@ -3,6 +3,7 @@ package com.packsure.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.packsure.entity.Order;
 import com.packsure.entity.PaymentInfo;
 import com.packsure.repository.OrderRepository;
 import com.packsure.repository.PaymentInfoRepository;
@@ -20,20 +21,28 @@ public class PaymentInfoService {
 	@Autowired
 	private OrderRepository orderRepository;
 	
-	public Map<String,List<PaymentInfo>> processAndReport(List<PaymentInfo> paymentInfos){
+	public List<PaymentInfo> processAndReport(List<PaymentInfo> paymentInfos){
 		
-		Map<String, List<PaymentInfo>> report = new HashMap<>();
-		
-		for(PaymentInfo payment : paymentInfos) {
-		
-			 String orderNumber = String.valueOf(payment.getOrderID());
+		  List<PaymentInfo> validPayments = new ArrayList<>();
 
-			    if (orderRepository.findByBarcodeNumber(orderNumber) != null) {
-			        String type = payment.getPaymentType();
-			        report.computeIfAbsent(type, k -> new ArrayList<>()).add(payment);
-			    }
-		}
-		return report;
+		    for (PaymentInfo payment : paymentInfos) {
+
+		        String orderNumber = String.valueOf(payment.getOrderID()).trim();
+
+		       
+		        if (orderNumber == null || orderNumber.isEmpty() || orderNumber.equalsIgnoreCase("null")) {
+		            continue;
+		        }
+		        System.out.println("Checking order: " + orderNumber);
+		       
+		        List<Order> matchingOrders = orderRepository.findAllByBarcodeNumber(orderNumber);
+
+		        if (!matchingOrders.isEmpty()) {
+		            validPayments.add(payment);
+		        }
+		    }
+
+		    return validPayments;
 	}
 
 	public Map<String, List<PaymentInfo>> getReportByDateRange(LocalDate startDate, LocalDate endDate) {

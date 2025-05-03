@@ -20,7 +20,7 @@ public class BarcodePool {
 
     private boolean isUsed = false;
     
-    private String barcodeImagePath;
+//    private String barcodeImagePath;
        
     @OneToOne
 	@JoinColumn(name = "order_id", unique = true)
@@ -51,13 +51,13 @@ public class BarcodePool {
 	}
 	
 	
-	public String getBarcodeImagePath() {
-		return barcodeImagePath;
-	}
-
-	public void setBarcodeImagePath(String barcodeImagePath) {
-		this.barcodeImagePath = barcodeImagePath;
-	}
+//	public String getBarcodeImagePath() {
+//		return barcodeImagePath;
+//	}
+//
+//	public void setBarcodeImagePath(String barcodeImagePath) {
+//		this.barcodeImagePath = barcodeImagePath;
+//	}
 	
 	
 	public Order getOrder() {
@@ -68,12 +68,12 @@ public class BarcodePool {
 		this.order = order;
 	}
 
-	public BarcodePool(Long id, String barcodeNumber, String barcodeImagePath, boolean isUsed, Order order) {
+	public BarcodePool(Long id, String barcodeNumber, boolean isUsed, Order order) {
 		super();
 		this.id = id;
 		this.barcodeNumber = barcodeNumber;
 		this.isUsed = isUsed;
-		this.barcodeImagePath = barcodeImagePath;
+//		this.barcodeImagePath = barcodeImagePath;
 		this.order = order;
 		
 	}

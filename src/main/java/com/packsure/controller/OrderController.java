@@ -77,10 +77,10 @@ public class OrderController {
 	    @PutMapping("/{barcode}/dispatch")
 	    public ResponseEntity<?> markOrderAsDispatched(@PathVariable String barcode) {
 	    	  try {
-	    	        orderService.markOrderAsDispatched(barcode);
-	    	        return ResponseEntity.ok(new HashMap<String, String>() {{
-	    	            put("message", "Order dispatched!");
-	    	        }});
+	    		      	        
+	    		  Map<String, String> markOrderAsDispatched = orderService.markOrderAsDispatched(barcode);
+	    		  return ResponseEntity.ok(markOrderAsDispatched);
+
 	    	    } catch (IllegalStateException e) {
 	    	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {{
 	    	            put("error", e.getMessage());

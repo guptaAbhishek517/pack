@@ -1,16 +1,24 @@
 package com.packsure.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
 public class PaymentInfo {
 	
-	
-	private Long orderID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+	private String orderId;
 	
 	private String paymentType;
 	
@@ -18,8 +26,8 @@ public class PaymentInfo {
 	
 	private double receivedAmount;
 	
-	@Temporal(TemporalType.DATE)
-	private Date paymentDate;
+//	@Temporal(TemporalType.DATE)
+	private LocalDate paymentDate;
 
 	public double getDueAmount() {
 		return dueAmount;
@@ -37,12 +45,12 @@ public class PaymentInfo {
 		this.receivedAmount = receivedAmount;
 	}
 
-	public Long getOrderID() {
-		return orderID;
+	public String getOrderID() {
+		return orderId;
 	}
 
-	public void setOrderID(Long orderID) {
-		this.orderID = orderID;
+	public void setOrderID(String orderId) {
+		this.orderId = orderId;
 	}
 
 	public String getPaymentType() {
@@ -53,21 +61,22 @@ public class PaymentInfo {
 		this.paymentType = paymentType;
 	}
 
-	public Date getPaymentDate() {
+	public LocalDate getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Date paymentDate) {
+	public void setPaymentDate(LocalDate paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
-	public PaymentInfo(Long orderID, String paymentType, double dueAmount, double receivedAmount, Date paymentDate) {
+	public PaymentInfo(String orderId, String paymentType, double dueAmount, double receivedAmount, LocalDate paymentDate) {
 		super();
-		this.orderID = orderID;
+		this.orderId = orderId;
 		this.paymentType = paymentType;
 		this.dueAmount = dueAmount;
 		this.receivedAmount = receivedAmount;
 		this.paymentDate = paymentDate;
+		
 	}
 
 	public PaymentInfo() {
