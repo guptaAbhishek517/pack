@@ -26,7 +26,6 @@ public class PaymentInfo {
 	
 	private double receivedAmount;
 	
-//	@Temporal(TemporalType.DATE)
 	private LocalDate paymentDate;
 
 	public double getDueAmount() {

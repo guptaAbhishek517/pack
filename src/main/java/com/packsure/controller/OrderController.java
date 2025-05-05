@@ -54,17 +54,27 @@ public class OrderController {
 	 //api endpoint to make order pack
 	  @PutMapping("/{barcode}/pack")
 	    public ResponseEntity<?> markOrderAsPacked(@PathVariable String barcode) {
-	        try {
-	            orderService.markOrderAsPacked(barcode);
-	            return ResponseEntity.ok(Map.of("message", "Order Packed"));
-	        } catch (IllegalStateException e) {
-	            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-	        } catch (RuntimeException e) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-	        } catch (Exception e) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Something went wrong"));
-	        }
-	    }
+	        	    try {
+	        	        orderService.markOrderAsPacked(barcode);
+	        	        Map<String, String> response = new HashMap<>();
+	        	        response.put("message", "Order Packed");
+	        	        return ResponseEntity.ok(response);
+	        	    } catch (IllegalStateException e) {
+	        	        Map<String, String> error = new HashMap<>();
+	        	        error.put("error", e.getMessage());
+	        	        return ResponseEntity.badRequest().body(error);
+	        	    } catch (RuntimeException e) {
+	        	        Map<String, String> error = new HashMap<>();
+	        	        error.put("error", e.getMessage());
+	        	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	        	    } catch (Exception e) {
+	        	        Map<String, String> error = new HashMap<>();
+	        	        error.put("error", "Something went wrong");
+	        	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	        	    }
+	        	}
+
+	    
 	  
 	  //api endpoint to get OrderId
 	    @GetMapping("/all")

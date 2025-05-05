@@ -52,15 +52,17 @@ public class OrderService {
 		dto.setStatus(order.getStatus());
 		dto.setStatus(order.getOrderStatus());
 
-		List<OrderItemDTO> items = order.getItems().stream().map(item -> {
-			OrderItemDTO itemDTO = new OrderItemDTO();
-			itemDTO.setItemId(item.getId());
-			itemDTO.setItemName(item.getItemName());
-			itemDTO.setQuantity(item.getQuantity());
-			itemDTO.setPricePerUnit(item.getPricePerUnit());
-			itemDTO.setTotalPrice(item.getTotalPrice());
-			return itemDTO;
-		}).toList();
+		List<OrderItemDTO> items = order.getItems().stream()
+			    .map(item -> {
+			        OrderItemDTO itemDTO = new OrderItemDTO();
+			        itemDTO.setItemId(item.getId());
+			        itemDTO.setItemName(item.getItemName());
+			        itemDTO.setQuantity(item.getQuantity());
+			        itemDTO.setPricePerUnit(item.getPricePerUnit());
+			        itemDTO.setTotalPrice(item.getTotalPrice());
+			        return itemDTO;
+			    })
+			    .collect(Collectors.toList());
 
 		dto.setItems(items);
 		return dto;

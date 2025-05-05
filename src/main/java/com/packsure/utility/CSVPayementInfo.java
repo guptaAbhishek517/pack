@@ -33,9 +33,9 @@ public class CSVPayementInfo {
                 
                 String paymentType= csvRecord.get("paymentType");
                 
-               
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate paymentDate = LocalDate.parse(csvRecord.get("paymentDate"), formatter);
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDate paymentDate = LocalDate.parse(csvRecord.get("paymentDate").trim(), formatter);
                 
                 String orderId = csvRecord.get("orderId");
                 
