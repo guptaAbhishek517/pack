@@ -28,69 +28,82 @@ public class CSVController {
 
 	@PostMapping("/upload-csv")
 	public ResponseEntity<?> uploadCSVFile(@RequestParam("file") MultipartFile file) {
-	    String fileType = file.getContentType();
+		String fileType = file.getContentType();
 
-	    if (!"text/csv".equals(fileType) && !file.getOriginalFilename().endsWith(".csv")) {
-	        Map<String, Object> errorResponse = new HashMap<>();
-	        errorResponse.put("success", false);
-	        errorResponse.put("message", "Please upload a valid CSV file.");
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-	    }
+		if (!"text/csv".equals(fileType) && !file.getOriginalFilename().endsWith(".csv")) {
+			Map<String, Object> errorResponse = new HashMap<>();
+			errorResponse.put("success", false);
+			errorResponse.put("message", "Please upload a valid CSV file.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
 
-	    try {
-	        List<PaymentInfo> paymentInfos = CSVPayementInfo.csvPayInfo(file.getInputStream());
-	        List<PaymentInfo> savedInfos = paymentInfoService.processAndReport(paymentInfos);
+		try {
+			List<PaymentInfo> paymentInfos = CSVPayementInfo.csvPayInfo(file.getInputStream());
+			List<PaymentInfo> savedInfos = paymentInfoService.processAndReport(paymentInfos);
 
-	        Map<String, Object> successResponse = new HashMap<>();
-	        successResponse.put("success", true);
-	        successResponse.put("message", savedInfos.size() + " records saved successfully.");
-	        successResponse.put("data", savedInfos);
+			if (savedInfos.isEmpty()) {
+				Map<String, Object> emptyResponse = new HashMap<>();
+				emptyResponse.put("error", true);
+				emptyResponse.put("message", "No records were saved.OrderId's not present");
+				emptyResponse.put("data", savedInfos);
+				return ResponseEntity.status(HttpStatus.OK).body(emptyResponse);
+			}
 
-	        return ResponseEntity.ok(successResponse);
-	    } catch (DuplicatePaymentException dpe) {
-	        Map<String, Object> conflictResponse = new HashMap<>();
-	        conflictResponse.put("success", false);
-	        conflictResponse.put("message", dpe.getMessage());
-	        return ResponseEntity.status(HttpStatus.CONFLICT).body(conflictResponse);
-	    } catch (Exception e) {
-	        Map<String, Object> errorResponse = new HashMap<>();
-	        errorResponse.put("success", false);
-	        errorResponse.put("message", "Failed to process CSV file: " + e.getMessage());
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-	    }
+			Map<String, Object> successResponse = new HashMap<>();
+			successResponse.put("success", true);
+			successResponse.put("message", savedInfos.size() + " records saved successfully.");
+			successResponse.put("data", savedInfos);
+
+			return ResponseEntity.ok(successResponse);
+		} catch (DuplicatePaymentException dpe) {
+			Map<String, Object> conflictResponse = new HashMap<>();
+			conflictResponse.put("success", false);
+			conflictResponse.put("message", dpe.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(conflictResponse);
+		} catch (Exception e) {
+			Map<String, Object> errorResponse = new HashMap<>();
+			errorResponse.put("success", false);
+			errorResponse.put("message", "Failed to process CSV file: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		}
 	}
 
+	@GetMapping("/getAll")
+	public ResponseEntity<List<PaymentInfo>> getAllReport() {
+		try {
+			List<PaymentInfo> report = paymentInfoService.getAllReports();
+			return ResponseEntity.ok(report);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+		}
+	}
 
 	@GetMapping("/by-date")
 	public ResponseEntity<List<PaymentInfo>> getReportByDate(
 			@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+			@RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+			@RequestParam(required = false) String paymentType) {
 
 		System.out.println("Start Date: " + startDate);
 		System.out.println("End Date: " + endDate);
-		
+		System.out.println("PaymentType: " + paymentType);
+
+//		List<PaymentInfo> report;
+
 		try {
-		List<PaymentInfo> report = paymentInfoService.getReportByDateRange(startDate, endDate);
-		if(report.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-		return ResponseEntity.ok(report);
-		}
-		catch(Exception e) {
+			List<PaymentInfo> report;
+
+			if (paymentType != null && !paymentType.isEmpty() && !paymentType.equalsIgnoreCase("all")) {
+				report = paymentInfoService.getReportByDateRangeAndPaymentType(startDate, endDate, paymentType);
+			} else {
+				report = paymentInfoService.getReportByDateRange(startDate, endDate);
+			}
+
+			return ResponseEntity.ok(report);
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
 		}
-		
+
 	}
-	
-    @GetMapping("/byPaymentType")
-	public ResponseEntity<List<PaymentInfo>> getReportByPaymentType(@RequestParam String type){
-		try {
-			String paymentType = String.valueOf(type.toLowerCase());
-			List<PaymentInfo> report = paymentInfoService.getReportByPaymentType(paymentType);
-			return ResponseEntity.ok(report);
-		}catch(IllegalArgumentException e){
-			return ResponseEntity.badRequest().body(Collections.emptyList());
-		}
- 
-	}
+
 }

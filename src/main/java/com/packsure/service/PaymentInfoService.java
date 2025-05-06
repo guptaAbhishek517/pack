@@ -16,75 +16,111 @@ import java.util.*;
 
 @Service
 public class PaymentInfoService {
-	
-	
+
 	@Autowired
 	private PaymentInfoRepository paymentInfoRepo;
-	
+
 	@Autowired
 	private OrderRepository orderRepository;
-	
-	public List<PaymentInfo> processAndReport(List<PaymentInfo> paymentInfos){
+
+	public List<PaymentInfo> processAndReport(List<PaymentInfo> paymentInfos) {
+
+		List<PaymentInfo> validPayments = new ArrayList<>();
 		
-		  List<PaymentInfo> validPayments = new ArrayList<>();
+//		List<String> failedOrderIds = new ArrayList<>();
+//		
+//		Set<String> seenOrderIds = new HashSet<>();
+		
+		
 
-		    for (PaymentInfo payment : paymentInfos) {
+		for (PaymentInfo payment : paymentInfos) {
 
-		        String orderNumber = String.valueOf(payment.getOrderID()).trim();
+			String orderNumber = String.valueOf(payment.getOrderID()).trim();
 
-		       
-		        if (orderNumber == null || orderNumber.isEmpty() || orderNumber.equalsIgnoreCase("null")) {
-		            continue;
-		        }
-		        
-		        System.out.println("Checking order: " + orderNumber);
-		       
-		        List<Order> matchingOrders = orderRepository.findAllByBarcodeNumber(orderNumber);
-		       
+			if (orderNumber == null || orderNumber.isEmpty() || orderNumber.equalsIgnoreCase("null")) {
+				continue;
+			}
 
-		        if (!matchingOrders.isEmpty()) {
-		        	boolean exists = paymentInfoRepo.existsByOrderIdAndPaymentDate(
-		        			payment.getOrderID(), payment.getPaymentDate());
-		        	
-		        	if(!exists) {
-		        	PaymentInfo saved = paymentInfoRepo.save(payment);
-		            validPayments.add(saved);}
-		        	else{
-		        		throw new DuplicatePaymentException("payment Already exists for the Order ID " + payment.getOrderID()
-		        		+ " on " + payment.getPaymentDate());
-		        	}
-		        }
-		        
-		        
-		    }
+			System.out.println("Checking order: " + orderNumber);
 
-		    return validPayments;
+			List<Order> matchingOrders = orderRepository.findAllByBarcodeNumber(orderNumber);
+
+			if (!matchingOrders.isEmpty()) {
+				boolean exists = paymentInfoRepo.existsByOrderIdAndPaymentDate(payment.getOrderID(),
+						payment.getPaymentDate());
+
+				if (!exists) {
+					PaymentInfo saved = paymentInfoRepo.save(payment);
+					validPayments.add(saved);
+				} else {
+					throw new DuplicatePaymentException("payment Already exists for the Order ID "
+							+ payment.getOrderID() + " on " + payment.getPaymentDate());
+				}
+			}
+
+		}
+
+		return validPayments;
+	}
+
+	public List<PaymentInfo> getReportByDateRangeAndPaymentType(LocalDate startDate, LocalDate endDate,
+			String paymentType) {
+		try {
+			List<PaymentInfo> result = paymentInfoRepo.findByPaymentDateBetweenAndPaymentType(startDate, endDate,
+					paymentType);
+			if (result.isEmpty()) {
+				throw new NoDataFoundException("No payment records for the given date");
+			}
+			return result;
+		} catch (DataAccessException dae) {
+			throw new DatabaseException("Database access error while retrieving payment Reocrds");
+		} catch (NoDataFoundException ndfe) {
+			throw ndfe;
+		} catch (Exception e) {
+			throw new RuntimeException("An unexpected error occour while fetching payments record");
+		}
+
 	}
 
 	public List<PaymentInfo> getReportByDateRange(LocalDate startDate, LocalDate endDate) {
 		try {
-		List<PaymentInfo> result = paymentInfoRepo.findAllByPaymentDateBetween(startDate, endDate);
-		if(result.isEmpty()) {
-			throw new NoDataFoundException("No payment records for the given date");
-		}
-		return result;
-		}catch(DataAccessException dae) {
+			List<PaymentInfo> result = paymentInfoRepo.findAllByPaymentDateBetween(startDate, endDate);
+			if (result.isEmpty()) {
+				throw new NoDataFoundException("No payment records for the given date");
+			}
+			return result;
+		} catch (DataAccessException dae) {
 			throw new DatabaseException("Database access error while retrieving payment Reocrds");
-		}catch(NoDataFoundException ndfe){
+		} catch (NoDataFoundException ndfe) {
 			throw ndfe;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("An unexpected error occour while fetching payments record");
 		}
-		
-		
 	}
 
-	public List<PaymentInfo> getReportByPaymentType(String paymentType) {
-		try {
-	        return paymentInfoRepo.findAllByPaymentType(paymentType);
-	    } catch (Exception e) {
-	        throw new RuntimeException("Error fetching payments by type", e);
-	    }
+	public List<PaymentInfo> getAllReports() {
+		List<PaymentInfo> result = paymentInfoRepo.findAll();
+		return result;
 	}
+
+//	public List<PaymentInfo> getReportByDateRangeAndPaymentType(LocalDate startDate, LocalDate endDate,
+//			String paymentType) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+//	public List<PaymentInfo> getReportByPaymentTypeAndPaymentType(String paymentType) {
+//		try {
+//	        return paymentInfoRepo.findAllByPaymentType(paymentType);
+//	    } catch (Exception e) {
+//	        throw new RuntimeException("Error fetching payments by type", e);
+//	    }
+//	}
+
+//	public List<PaymentInfo> getReportByDateRangeAndPaymentType(LocalDate startDate, LocalDate endDate,
+//			String paymentType) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 }
