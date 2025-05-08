@@ -5,16 +5,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.packsure.entity.BarcodePool;
 import com.packsure.entity.Order;
 import com.packsure.exception.BarcodeNotFoundException;
-import com.packsure.exception.NoAvailableBarcodeException;
 import com.packsure.repository.BarcodePoolRepository;
 import com.packsure.repository.OrderRepository;
-import com.packsure.utility.BarcodeGenerator;
 
 @Service
 public class BarcodePoolService {
@@ -60,7 +57,7 @@ public class BarcodePoolService {
 
 				String uploadBarcodeImage = "uploads/barcodes";
 
-				String filePath = BarcodeGenerator.generateBarcodeImage(barcodeNumber, uploadBarcodeImage);
+//				String filePath = BarcodeGenerator.generateBarcodeImage(barcodeNumber, uploadBarcodeImage);
 
 //				barcodePool.setBarcodeImagePath(filePath);
 

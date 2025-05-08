@@ -86,5 +86,11 @@ public class OrderController {
 		Map<String, String> result = orderService.markOrderAsDispatched(barcode);
 		return ResponseEntity.ok(result);
 	}
+	
+	@GetMapping("by-barcode/{barcode}/before")
+	public ResponseEntity<Order> getOrderByBarcodeBeforeDispatch(@PathVariable String barcode){
+		Order order = orderService.getOrderByBarcodeBeforeDispatch(barcode);
+		return ResponseEntity.ok(order);
+	}
 
 }

@@ -4,15 +4,16 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.packsure.dto.OrderDTO;
 import com.packsure.dto.OrderItemDTO;
 import com.packsure.entity.BarcodePool;
 import com.packsure.entity.Order;
@@ -23,10 +24,6 @@ import com.packsure.exception.ResourceNotFoundException;
 import com.packsure.repository.BarcodePoolRepository;
 //import com.packsure.repository.BarcodeRepository;
 import com.packsure.repository.OrderRepository;
-
-import jakarta.transaction.Transactional;
-
-import com.packsure.dto.OrderDTO;
 
 @Service
 public class OrderService {
@@ -189,6 +186,22 @@ public class OrderService {
 	    response.put("status", "INVALID_STATUS");
 	    response.put("message", "Order must be in 'PACKED' status to dispatch. Current status: " + currentStatus);
 	    return response;
+	}
+
+	public Order getOrderByBarcodeBeforeDispatch(String barcode) {
+		// TODO Auto-generated method stub
+		Order order = orderRepository.findByBarcodeNumber(barcode);
+		
+		if ("DISPATCHED".equalsIgnoreCase(order.getStatus())) {
+			throw new BarcodeAlreadyDispatchedException("Order is already packed for this barcode.");
+		}
+		
+		if("PENDING".equalsIgnoreCase(order.getStatus())){
+			throw new BarcodeAlreadyPackedException("Order is not packed yet.");
+		}
+
+		return order; // Fetch the order linked to the barcode
+		
 	}
 
 }
