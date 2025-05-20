@@ -34,6 +34,8 @@ public class OrderItem {
 	private Double pricePerUnit;
 
 	private Double totalPrice;
+	
+
 
 	public Long getId() {
 		return id;
@@ -90,11 +92,12 @@ public class OrderItem {
 	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+	
+	
 
-
-   
+  
 	public OrderItem(Long id, Order order, Long itemId, String itemName, Integer quantity, Double pricePerUnit,
-			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt) {
+			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt, String orderId) {
 		super();
 		this.id = id;
 		this.order = order;
@@ -103,6 +106,7 @@ public class OrderItem {
 		this.quantity = quantity;
 		this.pricePerUnit = pricePerUnit;
 		this.totalPrice = totalPrice;
+		
 		
 	}
 

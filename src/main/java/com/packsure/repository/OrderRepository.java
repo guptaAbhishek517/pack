@@ -1,9 +1,11 @@
 package com.packsure.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.packsure.entity.Order;
 
@@ -13,5 +15,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	Order findByBarcodeNumber(String barcode);
 	
 	List<Order> findAllByBarcodeNumber(String barcode);
+
+	boolean existsByBarcodeNumber(String barcode);
+	
+	@Query("SELECT MAX(o.orderDate) FROM Order o")
+	LocalDateTime findMaxOrderDate();
 
 }

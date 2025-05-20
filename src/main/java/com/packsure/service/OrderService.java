@@ -20,10 +20,12 @@ import com.packsure.entity.Order;
 import com.packsure.entity.OrderItem;
 import com.packsure.exception.BarcodeAlreadyDispatchedException;
 import com.packsure.exception.BarcodeAlreadyPackedException;
+import com.packsure.exception.BarcodeNotFoundException;
 import com.packsure.exception.ResourceNotFoundException;
 import com.packsure.repository.BarcodePoolRepository;
 //import com.packsure.repository.BarcodeRepository;
 import com.packsure.repository.OrderRepository;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -125,6 +127,16 @@ public class OrderService {
 			orderDTO.setOrderSource(order.getOrderSource());
 			orderDTO.setOrderStatus(order.getOrderStatus());
 			orderDTO.setDeliverySource(order.getDeliverySource());
+			orderDTO.setOrderSource(order.getOrderSource());
+			orderDTO.setPaymentType(order.getPaymentType());
+			orderDTO.setPaymentStatus(order.getPaymentStatus());
+		    orderDTO.setCity(order.getCity());	
+		    orderDTO.setState(order.getState());
+		    orderDTO.setAddress2(order.getAddress2());
+    	    orderDTO.setCountry(order.getCountry());
+    	    orderDTO.setZipCode(order.getZipCode());
+		    
+		    System.out.println(order.getZipCode());
 			return orderDTO;
 		});
 	}
@@ -203,5 +215,68 @@ public class OrderService {
 		return order; // Fetch the order linked to the barcode
 		
 	}
+
+	
+	public void updateOrderStatus(String orderId, String orderStatus , String cancelationReason) {
+	    System.out.println("Service Layer : "+ orderId);
+	    System.out.println(orderStatus);
+	    System.out.println(cancelationReason);
+
+	    Order order = orderRepository.findByBarcodeNumber(orderId);
+	    
+	    if (order != null) {
+	        order.setOrderStatus(orderStatus);
+	        order.setCancelReason(cancelationReason);
+	        orderRepository.save(order);
+	    } else {
+	        throw new RuntimeException("Order not found with orderId: " + orderId);
+	    }
+	}
+
+	public void updateDeliverySourceStatus(String orderId, String deliverySource) {
+		System.out.println(orderId);
+		System.out.println(deliverySource);
+		
+		Order order = orderRepository.findByBarcodeNumber(orderId);
+		
+		if(order !=null) {
+			order.setDeliverySource(deliverySource);
+			orderRepository.save(order);
+		}else {
+			throw new RuntimeException("Order not found with orderID: " + orderId);
+		}	
+	}
+
+	
+	public List<Order> saveAllOrders(List<OrderDTO> orderDTOs) {
+	    List<Order> newOrders = orderDTOs.stream()
+	        .filter(dto -> !orderRepository.existsByBarcodeNumber(dto.getBarcodeNumber()))
+	        .map(dto -> {
+	            Order order = new Order();
+//	            order.setOrderId(dto.getBarcodeNumber());
+	            order.setBarcodeNumber(dto.getBarcodeNumber());
+	            order.setCustomerName(dto.getCustomerName());
+	            order.setCustomerEmail(dto.getCustomerEmail());
+	            order.setCustomerPhone(dto.getCustomerPhone());
+	            order.setCustomerAddress(dto.getCustomerAddress());
+	            order.setOrderDate(dto.getOrderDate());
+	            order.setStatus(dto.getStatus());
+	            order.setPackedAt(dto.getPackedAt());
+	            order.setDispatchedAt(dto.getDispatchedAt());
+	            order.setOrderType(dto.getOrderType());
+	            order.setOrderStatus(dto.getOrderStatus());
+	            order.setOrderSource(dto.getOrderSource());
+	            order.setPaymentType(dto.getPaymentType());
+	            order.setDeliverySource(dto.getDeliverySource());
+	            return order;
+	        })
+	        .collect(Collectors.toList());
+
+	    return orderRepository.saveAll(newOrders);
+	}
+
+
+	
+
 
 }

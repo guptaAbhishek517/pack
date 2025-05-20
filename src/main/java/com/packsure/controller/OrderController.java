@@ -1,6 +1,7 @@
 package com.packsure.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.packsure.dto.OrderDTO;
+import com.packsure.dto.OrderStatusUpdateDto;
 import com.packsure.entity.Order;
 import com.packsure.service.OrderService;
 
@@ -41,6 +43,18 @@ public class OrderController {
 		return ResponseEntity.ok(order);
 
 	}
+	
+	@PostMapping("/savedOrders/bulk")
+	public ResponseEntity<?> saveBulkOrders(@RequestBody List<OrderDTO> orders) {
+		System.out.println(orders + "--");
+		 if (orders == null || orders.isEmpty()) {
+		        return ResponseEntity.badRequest().build();
+		    }
+	    List<Order> savedOrders = orderService.saveAllOrders(orders);
+	    return ResponseEntity.ok(savedOrders);
+	}
+	
+	
 
 	// api endpoint to get orders by barcodeNumber
 	@GetMapping("/by-barcode/{barcode}")
@@ -91,6 +105,32 @@ public class OrderController {
 	public ResponseEntity<Order> getOrderByBarcodeBeforeDispatch(@PathVariable String barcode){
 		Order order = orderService.getOrderByBarcodeBeforeDispatch(barcode);
 		return ResponseEntity.ok(order);
+	}
+	
+	@PutMapping("/update/orderStatus")
+	public ResponseEntity<?> updateOrderStatus(@RequestBody OrderStatusUpdateDto dto) {
+		String orderId = dto.getOrderId();
+		String orderStatus = dto.getOrderStatus();
+		String cancelationReason = dto.getReason();
+		
+		System.out.println(orderId);
+		System.out.println(orderStatus);
+		System.out.println(cancelationReason);
+		
+	    orderService.updateOrderStatus(dto.getOrderId(), dto.getOrderStatus(), dto.getReason());
+	    return ResponseEntity.ok("Order status updated");
+	}
+	
+	@PutMapping("/update/deliverySource")
+	public ResponseEntity<?> updateDeliverySource(@RequestBody OrderStatusUpdateDto dto) {
+		String orderId = dto.getOrderId();
+		String deliverySource = dto.getDeliverySource();
+		
+		System.out.println(orderId);
+		System.out.println(deliverySource);
+		
+	    orderService.updateDeliverySourceStatus(dto.getOrderId(), dto.getDeliverySource());
+	    return ResponseEntity.ok("Order delivery partner updated");
 	}
 
 }

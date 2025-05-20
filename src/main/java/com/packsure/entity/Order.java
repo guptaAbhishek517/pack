@@ -59,6 +59,22 @@ public class Order {
 //	private PaymentInfo paymentInfo;
 	
 	private String paymentType;
+	
+	private String city;
+	
+	private String state;
+	
+	private String Address2;
+	
+	private String Country;
+	
+	private String zipCode;
+	
+	private String paymentStatus;
+	
+	private String CancelReason;
+	
+	private String rto_risk;
 
 	public Long getId() {
 		return id;
@@ -164,11 +180,6 @@ public class Order {
 		OrderType = orderType;
 	}
 	
-	
-	
-	
-	
-	
 //
 //	public PaymentInfo getPaymentInfo() {
 //		return paymentInfo;
@@ -178,13 +189,63 @@ public class Order {
 //		this.paymentInfo = paymentInfo;
 //	}
 
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getAddress2() {
+		return Address2;
+	}
+
+	public void setAddress2(String address2) {
+		Address2 = address2;
+	}
+
+	public String getCountry() {
+		return Country;
+	}
+
+	public void setCountry(String country) {
+		Country = country;
+	}
+
 	public String getDeliverySource() {
 		return deliverySource;
 	}
 
 	public void setDeliverySource(String deliverySource) {
 		this.deliverySource = deliverySource;
-	}
+	}//	@OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
+//	@JsonManagedReference
+//	private PaymentInfo paymentIn
 
 	public String getPaymentType() {
 		return paymentType;
@@ -209,11 +270,66 @@ public class Order {
 	public void setOrderStatus(String orderStatus) {
 		this.orderStatus = orderStatus;
 	}
+	
+	
+
+	public String getCancelReason() {
+		return CancelReason;
+	}
+
+	public void setCancelReason(String cancelReason) {
+		CancelReason = cancelReason;
+	}
+	
+	
+
+	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
+			LocalDateTime orderDate, String status, LocalDateTime packedAt, LocalDateTime dispatchedAt,
+			String orderType, BarcodePool barcodepool, List<OrderItem> items, String barcodeNumber, String orderStatus,
+			String orderSource, String deliverySource, String paymentType, String city, String state, String address2,
+			String country, String zipCode, String paymentStatus, String cancelReason, String rto_risk) {
+		super();
+		this.id = id;
+		this.customerName = customerName;
+		this.customerEmail = customerEmail;
+		this.customerPhone = customerPhone;
+		this.customerAddress = customerAddress;
+		this.orderDate = orderDate;
+		this.status = status;
+		this.packedAt = packedAt;
+		this.dispatchedAt = dispatchedAt;
+		OrderType = orderType;
+		this.barcodepool = barcodepool;
+		this.items = items;
+		this.barcodeNumber = barcodeNumber;
+		this.orderStatus = orderStatus;
+		this.orderSource = orderSource;
+		this.deliverySource = deliverySource;
+		this.paymentType = paymentType;
+		this.city = city;
+		this.state = state;
+		Address2 = address2;
+		Country = country;
+		this.zipCode = zipCode;
+		this.paymentStatus = paymentStatus;
+		CancelReason = cancelReason;
+		this.rto_risk = rto_risk;
+	}
+
+	public String getRto_risk() {
+		return rto_risk;
+	}
+
+	public void setRto_risk(String rto_risk) {
+		this.rto_risk = rto_risk;
+	}
 
 	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
 			LocalDateTime orderDate, String status, List<OrderItem> items,BarcodePool barcodepool,
 			LocalDateTime packedAt, LocalDateTime dispatchedAt, String barcodeNumber,String orderStatus,
-			String OrderType, String orderSource, String paymentType, String deliverySource) {
+			String OrderType, String orderSource, String paymentType, String deliverySource,
+			String city, String Country , String state, String Address2, String zipCode , String paymentStatus, 
+			String cancelReason, String rto_risk ) {
 		super();
 		this.id = id;
 		this.customerName = customerName;
@@ -232,6 +348,14 @@ public class Order {
 		this.orderSource = orderSource;
 		this.paymentType = paymentType;
 		this.deliverySource = deliverySource;
+		this.Address2 = Address2;
+		this.Country = Country;
+		this.state = state;
+		this.city = city;
+		this.zipCode = zipCode;
+		this.paymentStatus = paymentStatus;
+		this.CancelReason = cancelReason;
+		this.rto_risk = rto_risk;
 //		this.paymentInfo = paymentInfo;	
 	}
 
