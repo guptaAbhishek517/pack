@@ -35,6 +35,8 @@ public class OrderItem {
 
 	private Double totalPrice;
 	
+	private Long channel_sku;
+	
 
 
 	public Long getId() {
@@ -94,10 +96,20 @@ public class OrderItem {
 	}
 	
 	
+	
+	
 
   
+	public Long getChannel_sku() {
+		return channel_sku;
+	}
+
+	public void setChannel_sku(Long channel_sku) {
+		this.channel_sku = channel_sku;
+	}
+
 	public OrderItem(Long id, Order order, Long itemId, String itemName, Integer quantity, Double pricePerUnit,
-			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt, String orderId) {
+			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt, String orderId, Long channel_sku) {
 		super();
 		this.id = id;
 		this.order = order;
@@ -106,6 +118,7 @@ public class OrderItem {
 		this.quantity = quantity;
 		this.pricePerUnit = pricePerUnit;
 		this.totalPrice = totalPrice;
+		this.channel_sku = channel_sku;
 		
 		
 	}

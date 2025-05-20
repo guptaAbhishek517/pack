@@ -21,4 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query("SELECT MAX(o.orderDate) FROM Order o")
 	LocalDateTime findMaxOrderDate();
 
+	Optional<Order> findOrderByBarcodeNumber(String barcodeNumber);
+	
+	
+
 }

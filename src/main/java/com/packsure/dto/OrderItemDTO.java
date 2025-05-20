@@ -18,6 +18,11 @@ public class OrderItemDTO {
 	
 	@JsonProperty("selling_price")
 	private Double totalPrice;
+	
+//	@JsonProperty("channel_sku")
+//	private Long channel_sku;
+	
+	
 	public Long getItemId() {
 		return itemId;
 	}
@@ -48,10 +53,18 @@ public class OrderItemDTO {
 	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+
+//	public Long getChannel_sku() {
+//		return channel_sku;
+//	}
+//	public void setChannel_sku(Long channel_sku) {
+//		this.channel_sku = channel_sku;
+//	}
 	@Override
 	public String toString() {
 		return "OrderItemDTO [itemId=" + itemId + ", itemName=" + itemName + ", quantity=" + quantity
-				+ ", pricePerUnit=" + pricePerUnit + ", totalPrice=" + totalPrice + "]";
+				+ ", pricePerUnit=" + pricePerUnit + ", totalPrice=" + totalPrice + ", channel_sku=" + 
+				 "]";
 	}
 	
 	

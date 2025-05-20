@@ -75,6 +75,8 @@ public class Order {
 	private String CancelReason;
 	
 	private String rto_risk;
+	
+	private int product_quantity;
 
 	public Long getId() {
 		return id;
@@ -280,40 +282,18 @@ public class Order {
 	public void setCancelReason(String cancelReason) {
 		CancelReason = cancelReason;
 	}
+
 	
 	
 
-	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
-			LocalDateTime orderDate, String status, LocalDateTime packedAt, LocalDateTime dispatchedAt,
-			String orderType, BarcodePool barcodepool, List<OrderItem> items, String barcodeNumber, String orderStatus,
-			String orderSource, String deliverySource, String paymentType, String city, String state, String address2,
-			String country, String zipCode, String paymentStatus, String cancelReason, String rto_risk) {
-		super();
-		this.id = id;
-		this.customerName = customerName;
-		this.customerEmail = customerEmail;
-		this.customerPhone = customerPhone;
-		this.customerAddress = customerAddress;
-		this.orderDate = orderDate;
-		this.status = status;
-		this.packedAt = packedAt;
-		this.dispatchedAt = dispatchedAt;
-		OrderType = orderType;
-		this.barcodepool = barcodepool;
-		this.items = items;
-		this.barcodeNumber = barcodeNumber;
-		this.orderStatus = orderStatus;
-		this.orderSource = orderSource;
-		this.deliverySource = deliverySource;
-		this.paymentType = paymentType;
-		this.city = city;
-		this.state = state;
-		Address2 = address2;
-		Country = country;
-		this.zipCode = zipCode;
-		this.paymentStatus = paymentStatus;
-		CancelReason = cancelReason;
-		this.rto_risk = rto_risk;
+
+
+	public int getProduct_quantity() {
+		return product_quantity;
+	}
+
+	public void setProduct_quantity(int product_quantity) {
+		this.product_quantity = product_quantity;
 	}
 
 	public String getRto_risk() {
@@ -323,13 +303,15 @@ public class Order {
 	public void setRto_risk(String rto_risk) {
 		this.rto_risk = rto_risk;
 	}
-
+	
+	
+	
 	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
-			LocalDateTime orderDate, String status, List<OrderItem> items,BarcodePool barcodepool,
-			LocalDateTime packedAt, LocalDateTime dispatchedAt, String barcodeNumber,String orderStatus,
-			String OrderType, String orderSource, String paymentType, String deliverySource,
-			String city, String Country , String state, String Address2, String zipCode , String paymentStatus, 
-			String cancelReason, String rto_risk ) {
+			LocalDateTime orderDate, String status, LocalDateTime packedAt, LocalDateTime dispatchedAt,
+			String orderType, BarcodePool barcodepool, List<OrderItem> items, String barcodeNumber, String orderStatus,
+			String orderSource, String deliverySource, String paymentType, String city, String state, String address2,
+			String country, String zipCode, String paymentStatus, String cancelReason, String rto_risk,
+			int product_quantity) {
 		super();
 		this.id = id;
 		this.customerName = customerName;
@@ -338,25 +320,25 @@ public class Order {
 		this.customerAddress = customerAddress;
 		this.orderDate = orderDate;
 		this.status = status;
-		this.items = items;
-		this.barcodepool = barcodepool;
-		this.dispatchedAt = dispatchedAt;
 		this.packedAt = packedAt;
+		this.dispatchedAt = dispatchedAt;
+		this.OrderType = orderType;
+		this.barcodepool = barcodepool;
+		this.items = items;
 		this.barcodeNumber = barcodeNumber;
-		this.OrderType = OrderType;
 		this.orderStatus = orderStatus;
 		this.orderSource = orderSource;
-		this.paymentType = paymentType;
 		this.deliverySource = deliverySource;
-		this.Address2 = Address2;
-		this.Country = Country;
-		this.state = state;
+		this.paymentType = paymentType;
 		this.city = city;
+		this.state = state;
+		this.Address2 = address2;
+		this.Country = country;
 		this.zipCode = zipCode;
 		this.paymentStatus = paymentStatus;
 		this.CancelReason = cancelReason;
 		this.rto_risk = rto_risk;
-//		this.paymentInfo = paymentInfo;	
+		this.product_quantity = product_quantity;
 	}
 
 	public Order() {

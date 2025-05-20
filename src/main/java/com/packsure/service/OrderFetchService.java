@@ -3,6 +3,7 @@ package com.packsure.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -65,64 +66,72 @@ public class OrderFetchService {
                 }
 
                
-                if (!orderRepository.existsByBarcodeNumber(dto.getBarcodeNumber())) {
-                	
-                	
-                    Order order = new Order();
-                    
+                Optional<Order> existingOrderOpt = orderRepository.findOrderByBarcodeNumber(dto.getBarcodeNumber());
+                Order order;
+
+                if (existingOrderOpt.isPresent()) {
+                    order = existingOrderOpt.get();
+                    System.out.println("Updating existing order: " + dto.getBarcodeNumber());
+                } else {
+                    order = new Order();
                     order.setBarcodeNumber(dto.getBarcodeNumber());
-                    order.setCustomerName(dto.getCustomerName());
-                    order.setOrderStatus(dto.getStatus());
-                    order.setCustomerAddress(dto.getCustomerAddress());
-                    order.setCity(dto.getCity());
-                    order.setAddress2(dto.getAddress2());
-                    order.setCountry(dto.getCountry());
-                    order.setStatus(dto.getStatus());
-                    order.setState(dto.getState());
-                    order.setCustomerEmail(dto.getCustomerEmail());
-                    order.setOrderSource(dto.getOrderSource());
-                    order.setZipCode(dto.getZipCode());
-                    order.setPaymentType(dto.getPaymentType());
-                    order.setPaymentStatus(dto.getPaymentStatus());
-                    order.setOrderDate(dto.getOrderDate()); // very important
-                    order.setCustomerPhone(dto.getCustomerPhone());
-                    order.setRto_risk(dto.getRto_risk());
-                    
+                    System.out.println("Inserting new order: " + dto.getBarcodeNumber());
+                }
 
-                    List<OrderItem> itemList = new ArrayList<>();
-                    if (dto.getItems() != null) {
-                        for (OrderItemDTO itemDTO : dto.getItems()) {
-                            OrderItem item = new OrderItem();
-                            item.setItemName(itemDTO.getItemName());
-                            item.setQuantity(itemDTO.getQuantity());
-                            item.setPricePerUnit(itemDTO.getPricePerUnit());
-                            item.setOrder(order);
-                            itemList.add(item);
-                         }
-                    }
-                    
-                    List<ShipmentDTO> shipments = dto.getShipments();
+                // These fields should be updated regardless of insert/update
+                order.setCustomerName(dto.getCustomerName());
+                order.setOrderStatus(dto.getStatus());
+                order.setCustomerAddress(dto.getCustomerAddress());
+                order.setCity(dto.getCity());
+                order.setAddress2(dto.getAddress2());
+                order.setCountry(dto.getCountry());
+                order.setStatus(dto.getStatus());
+                order.setState(dto.getState());
+                order.setCustomerEmail(dto.getCustomerEmail());
+                order.setOrderSource(dto.getOrderSource());
+                order.setZipCode(dto.getZipCode());
+                order.setPaymentType(dto.getPaymentType());
+                order.setPaymentStatus(dto.getPaymentStatus());
+                order.setOrderDate(dto.getOrderDate());
+                order.setCustomerPhone(dto.getCustomerPhone());
+                order.setRto_risk(dto.getRto_risk());
 
-                    if (shipments != null && !shipments.isEmpty()) {
-                        ShipmentDTO firstShipment = shipments.get(0);
-                        String courier = firstShipment.getCourrier();  
-                        System.out.println(courier);
-                        order.setDeliverySource(courier != null && !courier.isEmpty() ? courier : "by-hand");
-                    } else {
-                        order.setDeliverySource("by-hand");
+                // Build Order Items
+                List<OrderItem> itemList = new ArrayList<>();
+                if (dto.getItems() != null) {
+                    for (OrderItemDTO itemDTO : dto.getItems()) {
+                        OrderItem item = new OrderItem();
+                        item.setItemName(itemDTO.getItemName());
+                        item.setQuantity(itemDTO.getQuantity());
+                        item.setPricePerUnit(itemDTO.getPricePerUnit());
+                       
+                        item.setOrder(order);
+                        itemList.add(item);
                     }
+                }
+                order.setItems(itemList);
 
-                  
-                    order.setItems(itemList);
-                   
-                    orderRepository.save(order);
-                    
-                    if (!barcodePoolRepository.existsByBarcodeNumber(dto.getBarcodeNumber())) {
-                        BarcodePool pool = new BarcodePool();
-                        pool.setBarcodeNumber(dto.getBarcodeNumber());
-                        barcodePoolRepository.save(pool);
-                        System.out.println("Saved to BarcodePool: " + dto.getBarcodeNumber());
-                    }
+                // Set Delivery Source
+                List<ShipmentDTO> shipments = dto.getShipments();
+                if (shipments != null && !shipments.isEmpty()) {
+                    ShipmentDTO firstShipment = shipments.get(0);
+                    String courier = firstShipment.getCourrier();
+                    order.setDeliverySource(courier != null && !courier.isEmpty() ? courier : "by-hand");
+                } else {
+                    order.setDeliverySource("by-hand");
+                }
+
+                // Save order (will insert or update)
+                orderRepository.save(order);
+
+                // Save to barcode pool if not already
+                if (!barcodePoolRepository.existsByBarcodeNumber(dto.getBarcodeNumber())) {
+                    BarcodePool pool = new BarcodePool();
+                    pool.setBarcodeNumber(dto.getBarcodeNumber());
+                    barcodePoolRepository.save(pool);
+                    System.out.println("Saved to BarcodePool: " + dto.getBarcodeNumber());
+                
+
                     
                     System.out.println("Saved order: " + order.getBarcodeNumber());
                 } else {
