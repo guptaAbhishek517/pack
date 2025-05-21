@@ -58,6 +58,8 @@ public class Order {
 //	@JsonManagedReference
 //	private PaymentInfo paymentInfo;
 	
+	private String masterId;
+	
 	private String paymentType;
 	
 	private String city;
@@ -75,8 +77,20 @@ public class Order {
 	private String CancelReason;
 	
 	private String rto_risk;
+
+	private Boolean confirmed;
 	
 	private int product_quantity;
+	
+	
+
+	public String getMasterId() {
+		return masterId;
+	}
+
+	public void setMasterId(String masterId) {
+		this.masterId = masterId;
+	}
 
 	public Long getId() {
 		return id;
@@ -182,15 +196,9 @@ public class Order {
 		OrderType = orderType;
 	}
 	
-//
-//	public PaymentInfo getPaymentInfo() {
-//		return paymentInfo;
-//	}
-//
-//	public void setPaymentInfo(PaymentInfo paymentInfo) {
-//		this.paymentInfo = paymentInfo;
-//	}
+	
 
+	
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
@@ -245,9 +253,9 @@ public class Order {
 
 	public void setDeliverySource(String deliverySource) {
 		this.deliverySource = deliverySource;
-	}//	@OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
-//	@JsonManagedReference
-//	private PaymentInfo paymentIn
+	}
+	
+
 
 	public String getPaymentType() {
 		return paymentType;
@@ -272,8 +280,6 @@ public class Order {
 	public void setOrderStatus(String orderStatus) {
 		this.orderStatus = orderStatus;
 	}
-	
-	
 
 	public String getCancelReason() {
 		return CancelReason;
@@ -283,18 +289,6 @@ public class Order {
 		CancelReason = cancelReason;
 	}
 
-	
-	
-
-
-
-	public int getProduct_quantity() {
-		return product_quantity;
-	}
-
-	public void setProduct_quantity(int product_quantity) {
-		this.product_quantity = product_quantity;
-	}
 
 	public String getRto_risk() {
 		return rto_risk;
@@ -305,13 +299,28 @@ public class Order {
 	}
 	
 	
+	public Boolean getConfirmed() {
+		return confirmed;
+	}
+
+	public void setConfirmed(Boolean confirmed) {
+		this.confirmed = confirmed;
+	}
 	
+	public int getProduct_quantity() {
+		return product_quantity;
+	}
+
+	public void setProduct_quantity(int product_quantity) {
+		this.product_quantity = product_quantity;
+	}
+
 	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
 			LocalDateTime orderDate, String status, LocalDateTime packedAt, LocalDateTime dispatchedAt,
 			String orderType, BarcodePool barcodepool, List<OrderItem> items, String barcodeNumber, String orderStatus,
 			String orderSource, String deliverySource, String paymentType, String city, String state, String address2,
 			String country, String zipCode, String paymentStatus, String cancelReason, String rto_risk,
-			int product_quantity) {
+			 Boolean confirmed, int product_quantity, String masterId) {
 		super();
 		this.id = id;
 		this.customerName = customerName;
@@ -338,7 +347,9 @@ public class Order {
 		this.paymentStatus = paymentStatus;
 		this.CancelReason = cancelReason;
 		this.rto_risk = rto_risk;
+		this.confirmed = confirmed;
 		this.product_quantity = product_quantity;
+		this.masterId = masterId;
 	}
 
 	public Order() {

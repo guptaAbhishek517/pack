@@ -86,6 +86,13 @@ public class OrderDTO {
 	private List<ShipmentDTO> shipments;
 	
 	
+	@JsonProperty("others")
+	private OthersDTO others;
+	
+	
+	@JsonProperty("id")
+	private String masterId;
+	
 	
 	public List<ShipmentDTO> getShipments() {
 		return shipments;
@@ -282,6 +289,26 @@ public class OrderDTO {
 	public void setRto_risk(String rto_risk) {
 		this.rto_risk = rto_risk;
 	}
+	
+	
+
+	public OthersDTO getOthers() {
+		return others;
+	}
+
+	public void setOthers(OthersDTO others) {
+		this.others = others;
+	}
+	
+	
+
+	public String getMasterId() {
+		return masterId;
+	}
+
+	public void setMasterId(String masterId) {
+		this.masterId = masterId;
+	}
 
 	@Override
 	public String toString() {
@@ -292,7 +319,7 @@ public class OrderDTO {
 				+ paymentType + ", orderSource=" + orderSource + ", deliverySource=" + deliverySource + ", orderStatus="
 				+ orderStatus + ", city=" + city + ", state=" + state + ", Address2=" + Address2 + ", Country="
 				+ Country + ", zipCode=" + zipCode + ", paymentStatus=" + paymentStatus + ", rto_risk=" + rto_risk
-				+ ", shipments=" + shipments + "]";
+				+ ", shipments=" + shipments + ", others="+others+", masterId ="+masterId+ "]";
 	}
 	
 	

@@ -95,15 +95,26 @@ public class OrderFetchService {
                 order.setOrderDate(dto.getOrderDate());
                 order.setCustomerPhone(dto.getCustomerPhone());
                 order.setRto_risk(dto.getRto_risk());
+                order.setMasterId(dto.getMasterId());
+                
+                Boolean isConfirmed = dto.getOthers() != null ? dto.getOthers().getConfirmed() : null;
+                order.setConfirmed(isConfirmed); // optional field in entity if needed
+                if (Boolean.TRUE.equals(isConfirmed)) {
+                    order.setOrderStatus("Confirmed");
+                } else {
+                    order.setOrderStatus("Cancelled");
+                }
 
                 // Build Order Items
                 List<OrderItem> itemList = new ArrayList<>();
                 if (dto.getItems() != null) {
                     for (OrderItemDTO itemDTO : dto.getItems()) {
                         OrderItem item = new OrderItem();
+                        item.setItemId(itemDTO.getItemId());
                         item.setItemName(itemDTO.getItemName());
                         item.setQuantity(itemDTO.getQuantity());
                         item.setPricePerUnit(itemDTO.getPricePerUnit());
+                        item.setChannel_sku(itemDTO.getChannel_sku());
                        
                         item.setOrder(order);
                         itemList.add(item);
@@ -111,28 +122,33 @@ public class OrderFetchService {
                 }
                 order.setItems(itemList);
 
-                // Set Delivery Source
                 List<ShipmentDTO> shipments = dto.getShipments();
                 if (shipments != null && !shipments.isEmpty()) {
                     ShipmentDTO firstShipment = shipments.get(0);
                     String courier = firstShipment.getCourrier();
                     order.setDeliverySource(courier != null && !courier.isEmpty() ? courier : "by-hand");
-                } else {
-                    order.setDeliverySource("by-hand");
+                } 
+                
+                
+                if (shipments != null && !shipments.isEmpty()) {
+                	ShipmentDTO firstShipment = shipments.get(0);
+                	int shippedQuantity = firstShipment.getProduct_quantity();
+                   
+                    order.setProduct_quantity(shippedQuantity);
+                    System.out.println("Shipment quantity: " + shippedQuantity);
                 }
+
 
                 // Save order (will insert or update)
                 orderRepository.save(order);
 
-                // Save to barcode pool if not already
+               
                 if (!barcodePoolRepository.existsByBarcodeNumber(dto.getBarcodeNumber())) {
                     BarcodePool pool = new BarcodePool();
                     pool.setBarcodeNumber(dto.getBarcodeNumber());
                     barcodePoolRepository.save(pool);
                     System.out.println("Saved to BarcodePool: " + dto.getBarcodeNumber());
-                
-
-                    
+  
                     System.out.println("Saved order: " + order.getBarcodeNumber());
                 } else {
                     System.out.println("Order already exists: " + dto.getBarcodeNumber());

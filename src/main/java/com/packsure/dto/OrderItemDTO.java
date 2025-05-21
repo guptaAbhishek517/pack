@@ -3,7 +3,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class OrderItemDTO {
 	
 	
-	@JsonProperty("id")
+	@JsonProperty("product_id")
 	private Long itemId;
 	
 	
@@ -19,8 +19,8 @@ public class OrderItemDTO {
 	@JsonProperty("selling_price")
 	private Double totalPrice;
 	
-//	@JsonProperty("channel_sku")
-//	private Long channel_sku;
+	@JsonProperty("channel_sku")
+	private String channel_sku;
 	
 	
 	public Long getItemId() {
@@ -54,12 +54,12 @@ public class OrderItemDTO {
 		this.totalPrice = totalPrice;
 	}
 
-//	public Long getChannel_sku() {
-//		return channel_sku;
-//	}
-//	public void setChannel_sku(Long channel_sku) {
-//		this.channel_sku = channel_sku;
-//	}
+	public String getChannel_sku() {
+		return channel_sku;
+	}
+	public void setChannel_sku(String channel_sku) {
+		this.channel_sku = channel_sku;
+	}
 	@Override
 	public String toString() {
 		return "OrderItemDTO [itemId=" + itemId + ", itemName=" + itemName + ", quantity=" + quantity

@@ -32,10 +32,5 @@ public class ShipmentDTO {
 	public void setProduct_quantity(int product_quantity) {
 		this.product_quantity = product_quantity;
 	}
-	
-	
-	
-	
-	
-	
+		
 }

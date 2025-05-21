@@ -72,7 +72,7 @@ public class BarcodePoolService {
 	}
 
 	public List<String> getUsedBarcodes() {
-		return orderRepo.findAll().stream().filter(bp -> bp.getStatus().equalsIgnoreCase("Pending")).map(Order::getBarcodeNumber)
+		return orderRepo.findAll().stream().filter(bp -> bp.getStatus().equalsIgnoreCase("New")).map(Order::getBarcodeNumber)
 				.collect(Collectors.toList());
 	}
 }

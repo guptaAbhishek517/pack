@@ -89,9 +89,11 @@ public class OrderController {
 	// api endpoint to get OrderId
 	@GetMapping("/all")
 	public Page<OrderDTO> getAllOrderID(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+			@RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "") String search) {
 		Pageable pageable = PageRequest.of(page, size);
-		return orderService.getAllOrders(pageable);
+		
+		return orderService.getAllOrders(pageable, search);
 	}
 
 	// api endpoint to make orderID dispatched
@@ -106,6 +108,8 @@ public class OrderController {
 		Order order = orderService.getOrderByBarcodeBeforeDispatch(barcode);
 		return ResponseEntity.ok(order);
 	}
+	
+	
 	
 	@PutMapping("/update/orderStatus")
 	public ResponseEntity<?> updateOrderStatus(@RequestBody OrderStatusUpdateDto dto) {

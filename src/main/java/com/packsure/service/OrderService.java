@@ -110,9 +110,16 @@ public class OrderService {
 		return savedOrder;
 	}
 
-	public Page<OrderDTO> getAllOrders(Pageable pageable) {
-		Page<Order> ordersPage = orderRepository.findAll(pageable);
-
+	public Page<OrderDTO> getAllOrders(Pageable pageable, String search) {
+		Page<Order> ordersPage;
+		
+		if(search!=null && !search.trim().isEmpty()) {
+			ordersPage = orderRepository.searchOrders(search.trim(), pageable);
+		}
+		else {
+			ordersPage = orderRepository.findAll(pageable);
+		}
+		
 		return ordersPage.map(order -> {
 			OrderDTO orderDTO = new OrderDTO();
 			orderDTO.setOrderId(order.getBarcodeNumber());
@@ -135,7 +142,7 @@ public class OrderService {
 		    orderDTO.setAddress2(order.getAddress2());
     	    orderDTO.setCountry(order.getCountry());
     	    orderDTO.setZipCode(order.getZipCode());
-		    
+		    orderDTO.setRto_risk(order.getRto_risk());
 		    System.out.println(order.getZipCode());
 			return orderDTO;
 		});

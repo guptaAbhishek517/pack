@@ -35,7 +35,7 @@ public class OrderItem {
 
 	private Double totalPrice;
 	
-	private Long channel_sku;
+	private String channel_sku;
 	
 
 
@@ -96,20 +96,16 @@ public class OrderItem {
 	}
 	
 	
-	
-	
-
-  
-	public Long getChannel_sku() {
+	public String getChannel_sku() {
 		return channel_sku;
 	}
 
-	public void setChannel_sku(Long channel_sku) {
+	public void setChannel_sku(String channel_sku) {
 		this.channel_sku = channel_sku;
 	}
 
 	public OrderItem(Long id, Order order, Long itemId, String itemName, Integer quantity, Double pricePerUnit,
-			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt, String orderId, Long channel_sku) {
+			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt, String orderId, String channel_sku) {
 		super();
 		this.id = id;
 		this.order = order;
@@ -119,13 +115,12 @@ public class OrderItem {
 		this.pricePerUnit = pricePerUnit;
 		this.totalPrice = totalPrice;
 		this.channel_sku = channel_sku;
-		
-		
+			
 	}
 
 	public OrderItem() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	// Getters, Setters
