@@ -4,150 +4,193 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 
 public class OrderDTO {
 	
+	private String id; 
 	
-	private String orderId;
+	private String channel_order_id;
 	
-	@JsonProperty("customer_name")
-	private String customerName;
+	private String customer_name;
 	
-	@JsonProperty("customer_email")
-	private String customerEmail;
+	private String customer_email;
 	
-	@JsonProperty("customer_phone")
-	private String customerPhone;
+	private String customer_phone;
 	
+	private String customer_address;
 	
-	@JsonProperty("customer_address")
-	private String customerAddress;
+	private String customer_address2;
 	
-	@JsonProperty("channel_created_at")
-	@JsonFormat(pattern = "dd MMM yyyy, hh:mm a", locale = "en", timezone = "Asia/Kolkata")
-	private LocalDateTime orderDate;
+	private String channel_name;
 	
-	@JsonProperty("status")
+	private String customer_city;
+	
+	private String customer_state;
+	
+	private String customer_pincode;
+	
+	private  String customer_country;
+	
+	private String payment_status;
+	
+	private Double total;
+	
+	private Double tax;
+	
+	private String rto_risk;
+	
 	private String status;
 	
-	@JsonProperty("products")
-	private List<OrderItemDTO> items;
-	
-	private LocalDateTime packedAt;
-	
-	private LocalDateTime dispatchedAt;
-	
-	@JsonProperty("channel_order_id")
-	private String barcodeNumber;
-	
-	private String OrderType;
-	
-	@JsonProperty("payment_method")
-	private String paymentType;
-	
-	
-	@JsonProperty("channel_name")
-	private String orderSource;
-	
-	
-	private String deliverySource;
-	
+	private String payment_method;
 	
 	private String orderStatus;
 	
+	private String deliverySource;
 	
-	@JsonProperty("customer_city")
-    private String city;
-	
-	@JsonProperty("customer_state")
-	private String state;
-	
-	@JsonProperty("customer_address_2")
-	private String Address2;
+	private String sukStatus;
 	
 	
-	@JsonProperty("customer_country")
-	private String Country;
+	@JsonFormat(pattern = "dd MMM yyyy, hh:mm a", locale = "en", timezone = "Asia/Kolkata")
+	private LocalDateTime channel_created_at;
 	
-	@JsonProperty("customer_pincode")
-	private String zipCode;
+	@JsonFormat(pattern = "dd MMM yyyy, hh:mm a", locale = "en", timezone = "Asia/Kolkata")
+	private LocalDateTime created_at;
 	
-	@JsonProperty("payment_status")
-	private String paymentStatus;
+	@JsonFormat(pattern = "dd MMM yyyy, hh:mm a", locale = "en", timezone = "Asia/Kolkata")
+	private LocalDateTime updated_at;
 	
-	
-	@JsonProperty("rto_risk")
-	private String rto_risk;
-	
-	
-	@JsonProperty("shipments")
 	private List<ShipmentDTO> shipments;
 	
-	
-	@JsonProperty("others")
 	private OthersDTO others;
 	
+	private LocalDateTime packedAt;
 	
-	@JsonProperty("id")
-	private String masterId;
+	private LocalDateTime dispactchedAt;
 	
-	
-	public List<ShipmentDTO> getShipments() {
-		return shipments;
+	private List<OrderItemDTO> products;
+
+	public String getChannel_order_id() {
+		return channel_order_id;
 	}
 
-	public void setShipments(List<ShipmentDTO> shipments) {
-		this.shipments = shipments;
+	public void setChannel_order_id(String channel_order_id) {
+		this.channel_order_id = channel_order_id;
 	}
 
-	public String getOrderId() {
-		return orderId;
+	public String getCustomer_name() {
+		return customer_name;
 	}
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setCustomer_name(String customer_name) {
+		this.customer_name = customer_name;
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public String getCustomer_email() {
+		return customer_email;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setCustomer_email(String customer_email) {
+		this.customer_email = customer_email;
 	}
 
-	public String getCustomerEmail() {
-		return customerEmail;
+	public String getCustomer_phone() {
+		return customer_phone;
 	}
 
-	public void setCustomerEmail(String customerEmail) {
-		this.customerEmail = customerEmail;
+	public void setCustomer_phone(String customer_phone) {
+		this.customer_phone = customer_phone;
 	}
 
-	public String getCustomerPhone() {
-		return customerPhone;
+	public String getCustomer_address() {
+		return customer_address;
 	}
 
-	public void setCustomerPhone(String customerPhone) {
-		this.customerPhone = customerPhone;
+	public void setCustomer_address(String customer_address) {
+		this.customer_address = customer_address;
 	}
 
-	public String getCustomerAddress() {
-		return customerAddress;
+	public String getCustomer_address2() {
+		return customer_address2;
 	}
 
-	public void setCustomerAddress(String customerAddress) {
-		this.customerAddress = customerAddress;
+	public void setCustomer_address2(String customer_address2) {
+		this.customer_address2 = customer_address2;
 	}
 
-	public LocalDateTime getOrderDate() {
-		return orderDate;
+	public String getChannel_name() {
+		return channel_name;
 	}
 
-	public void setOrderDate(LocalDateTime orderDate) {
-		this.orderDate = orderDate;
+	public void setChannel_name(String channel_name) {
+		this.channel_name = channel_name;
+	}
+
+	public String getCustomer_city() {
+		return customer_city;
+	}
+
+	public void setCustomer_city(String customer_city) {
+		this.customer_city = customer_city;
+	}
+
+	public String getCustomer_state() {
+		return customer_state;
+	}
+
+	public void setCustomer_state(String customer_state) {
+		this.customer_state = customer_state;
+	}
+
+	public String getCustomer_pincode() {
+		return customer_pincode;
+	}
+
+	public void setCustomer_pincode(String customer_pincode) {
+		this.customer_pincode = customer_pincode;
+	}
+
+	public String getCustomer_country() {
+		return customer_country;
+	}
+
+	public void setCustomer_country(String customer_country) {
+		this.customer_country = customer_country;
+	}
+
+	public String getPayment_status() {
+		return payment_status;
+	}
+
+	public void setPayment_status(String payment_status) {
+		this.payment_status = payment_status;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	public Double getTax() {
+		return tax;
+	}
+
+	public void setTax(Double tax) {
+		this.tax = tax;
+	}
+
+	public String getRto_risk() {
+		return rto_risk;
+	}
+
+	public void setRto_risk(String rto_risk) {
+		this.rto_risk = rto_risk;
 	}
 
 	public String getStatus() {
@@ -158,12 +201,68 @@ public class OrderDTO {
 		this.status = status;
 	}
 
-	public List<OrderItemDTO> getItems() {
-		return items;
+	public String getPayment_method() {
+		return payment_method;
 	}
 
-	public void setItems(List<OrderItemDTO> items) {
-		this.items = items;
+	public void setPayment_method(String payment_method) {
+		this.payment_method = payment_method;
+	}
+
+	public LocalDateTime getChannel_created_at() {
+		return channel_created_at;
+	}
+
+	public void setChannel_created_at(LocalDateTime channel_created_at) {
+		this.channel_created_at = channel_created_at;
+	}
+
+	public LocalDateTime getCreated_at() {
+		return created_at;
+	}
+
+	public void setCreated_at(LocalDateTime created_at) {
+		this.created_at = created_at;
+	}
+
+	public LocalDateTime getUpdated_at() {
+		return updated_at;
+	}
+
+	public void setUpdated_at(LocalDateTime updated_at) {
+		this.updated_at = updated_at;
+	}
+
+	public List<ShipmentDTO> getShipments() {
+		return shipments;
+	}
+
+	public void setShipments(List<ShipmentDTO> shipments) {
+		this.shipments = shipments;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public OthersDTO getOthers() {
+		return others;
+	}
+
+	public void setOthers(OthersDTO others) {
+		this.others = others;
+	}
+
+	public List<OrderItemDTO> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<OrderItemDTO> products) {
+		this.products = products;
 	}
 
 	public LocalDateTime getPackedAt() {
@@ -174,44 +273,20 @@ public class OrderDTO {
 		this.packedAt = packedAt;
 	}
 
-	public LocalDateTime getDispatchedAt() {
-		return dispatchedAt;
+	public LocalDateTime getDispactchedAt() {
+		return dispactchedAt;
 	}
 
-	public void setDispatchedAt(LocalDateTime dispatchedAt) {
-		this.dispatchedAt = dispatchedAt;
+	public void setDispactchedAt(LocalDateTime dispactchedAt) {
+		this.dispactchedAt = dispactchedAt;
 	}
 
-	public String getBarcodeNumber() {
-		return barcodeNumber;
+	public String getOrderStatus() {
+		return orderStatus;
 	}
 
-	public void setBarcodeNumber(String barcodeNumber) {
-		this.barcodeNumber = barcodeNumber;
-	}
-
-	public String getOrderType() {
-		return OrderType;
-	}
-
-	public void setOrderType(String orderType) {
-		OrderType = orderType;
-	}
-
-	public String getPaymentType() {
-		return paymentType;
-	}
-
-	public void setPaymentType(String paymentType) {
-		this.paymentType = paymentType;
-	}
-
-	public String getOrderSource() {
-		return orderSource;
-	}
-
-	public void setOrderSource(String orderSource) {
-		this.orderSource = orderSource;
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 	public String getDeliverySource() {
@@ -222,109 +297,13 @@ public class OrderDTO {
 		this.deliverySource = deliverySource;
 	}
 
-	public String getOrderStatus() {
-		return orderStatus;
+	public String getSukStatus() {
+		return sukStatus;
 	}
 
-	public void setOrderStatus(String orderStatus) {
-		this.orderStatus = orderStatus;
-	}
-	
-	
-
-	public String getCity() {
-		return city;
+	public void setSukStatus(String sukStatus) {
+		this.sukStatus = sukStatus;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
-	}
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getAddress2() {
-		return Address2;
-	}
-
-	public void setAddress2(String address2) {
-		Address2 = address2;
-	}
-
-	public String getCountry() {
-		return Country;
-	}
-
-	public void setCountry(String country) {
-		Country = country;
-	}
-
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
-	}
-
-	public String getPaymentStatus() {
-		return paymentStatus;
-	}
-
-	public void setPaymentStatus(String paymentStatus) {
-		this.paymentStatus = paymentStatus;
-	}
-	
-	
-
-	public String getRto_risk() {
-		return rto_risk;
-	}
-
-	public void setRto_risk(String rto_risk) {
-		this.rto_risk = rto_risk;
-	}
-	
-	
-
-	public OthersDTO getOthers() {
-		return others;
-	}
-
-	public void setOthers(OthersDTO others) {
-		this.others = others;
-	}
-	
-	
-
-	public String getMasterId() {
-		return masterId;
-	}
-
-	public void setMasterId(String masterId) {
-		this.masterId = masterId;
-	}
-
-	@Override
-	public String toString() {
-		return "OrderDTO [orderId=" + orderId + ", customerName=" + customerName + ", customerEmail=" + customerEmail
-				+ ", customerPhone=" + customerPhone + ", customerAddress=" + customerAddress + ", orderDate="
-				+ orderDate + ", status=" + status + ", items=" + items + ", packedAt=" + packedAt + ", dispatchedAt="
-				+ dispatchedAt + ", barcodeNumber=" + barcodeNumber + ", OrderType=" + OrderType + ", paymentType="
-				+ paymentType + ", orderSource=" + orderSource + ", deliverySource=" + deliverySource + ", orderStatus="
-				+ orderStatus + ", city=" + city + ", state=" + state + ", Address2=" + Address2 + ", Country="
-				+ Country + ", zipCode=" + zipCode + ", paymentStatus=" + paymentStatus + ", rto_risk=" + rto_risk
-				+ ", shipments=" + shipments + ", others="+others+", masterId ="+masterId+ "]";
-	}
-	
-	
-	
-	
-	
-	
-}
+}	

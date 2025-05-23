@@ -54,14 +54,14 @@ public class CourierPartnerFetch {
 
     	            for (CourierPartnersDTO dto : partners) {
     	                Optional<CourierPartners> existing = courierPartnerRepository
-    	                        .findByCourierId(dto.getBaseCourierId());
+    	                        .findByCourierId(dto.getBase_courier_id());
 
     	                if (existing.isEmpty()) {
     	                    CourierPartners courier = new CourierPartners();
-    	                    courier.setCourierId(dto.getCourierId());
-    	                    courier.setBaseCourierId(dto.getBaseCourierId());
+    	                    courier.setCourierId(dto.getId());
+    	                    courier.setBaseCourierId(dto.getBase_courier_id());
     	                    courier.setName(dto.getName());
-    	                    courier.setMasterCompany(dto.getMasterCompany());
+    	                    courier.setMasterCompany(dto.getMaster_compnay());
 
     	                    courierPartnerRepository.save(courier);
     	                    saveCount++;

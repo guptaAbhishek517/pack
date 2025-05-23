@@ -1,5 +1,6 @@
 package com.packsure.controller;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,21 +45,21 @@ public class OrderController {
 
 	}
 	
-	@PostMapping("/savedOrders/bulk")
-	public ResponseEntity<?> saveBulkOrders(@RequestBody List<OrderDTO> orders) {
-		System.out.println(orders + "--");
-		 if (orders == null || orders.isEmpty()) {
-		        return ResponseEntity.badRequest().build();
-		    }
-	    List<Order> savedOrders = orderService.saveAllOrders(orders);
-	    return ResponseEntity.ok(savedOrders);
-	}
-	
+//	@PostMapping("/savedOrders/bulk")
+//	public ResponseEntity<?> saveBulkOrders(@RequestBody List<OrderDTO> orders) {
+//		System.out.println(orders + "--");
+//		 if (orders == null || orders.isEmpty()) {
+//		        return ResponseEntity.badRequest().build();
+//		    }
+//	    List<Order> savedOrders = orderService.saveAllOrders(orders);
+//	    return ResponseEntity.ok(savedOrders);
+//	}
+//	
 	
 
 	// api endpoint to get orders by barcodeNumber
 	@GetMapping("/by-barcode/{barcode}")
-	public ResponseEntity<Order> getOrderByBarcode(@PathVariable String barcode) {
+	public ResponseEntity<Order> getOrderByBarcode(@PathVariable String barcode) throws Exception {
 		Order order = orderService.getOrderByBarcode(barcode);
 		return ResponseEntity.ok(order);
 	}
@@ -90,10 +91,13 @@ public class OrderController {
 	@GetMapping("/all")
 	public Page<OrderDTO> getAllOrderID(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "") String search) {
+			@RequestParam(defaultValue = "") String search,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) 
+	{
 		Pageable pageable = PageRequest.of(page, size);
 		
-		return orderService.getAllOrders(pageable, search);
+		return orderService.getAllOrders(pageable, search, startDate, endDate);
 	}
 
 	// api endpoint to make orderID dispatched
@@ -113,7 +117,7 @@ public class OrderController {
 	
 	@PutMapping("/update/orderStatus")
 	public ResponseEntity<?> updateOrderStatus(@RequestBody OrderStatusUpdateDto dto) {
-		String orderId = dto.getOrderId();
+		String orderId = dto.getChannel_order_id();
 		String orderStatus = dto.getOrderStatus();
 		String cancelationReason = dto.getReason();
 		
@@ -121,19 +125,19 @@ public class OrderController {
 		System.out.println(orderStatus);
 		System.out.println(cancelationReason);
 		
-	    orderService.updateOrderStatus(dto.getOrderId(), dto.getOrderStatus(), dto.getReason());
+	    orderService.updateOrderStatus(dto.getChannel_order_id(), dto.getOrderStatus(), dto.getReason());
 	    return ResponseEntity.ok("Order status updated");
 	}
 	
 	@PutMapping("/update/deliverySource")
 	public ResponseEntity<?> updateDeliverySource(@RequestBody OrderStatusUpdateDto dto) {
-		String orderId = dto.getOrderId();
+		String orderId = dto.getChannel_order_id();
 		String deliverySource = dto.getDeliverySource();
 		
 		System.out.println(orderId);
 		System.out.println(deliverySource);
 		
-	    orderService.updateDeliverySourceStatus(dto.getOrderId(), dto.getDeliverySource());
+	    orderService.updateDeliverySourceStatus(dto.getChannel_order_id(), dto.getDeliverySource());
 	    return ResponseEntity.ok("Order delivery partner updated");
 	}
 

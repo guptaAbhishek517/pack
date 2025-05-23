@@ -2,15 +2,16 @@ package com.packsure.dto;
 
 public class OrderStatusUpdateDto {
 	
-	public String orderId;
+	public String channel_order_id;
 	public String orderStatus;
 	public String deliverySource;
 	private String reason;
-	public String getOrderId() {
-		return orderId;
+
+	public String getChannel_order_id() {
+		return channel_order_id;
 	}
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setChannel_order_id(String channel_order_id) {
+		this.channel_order_id = channel_order_id;
 	}
 	public String getOrderStatus() {
 		return orderStatus;

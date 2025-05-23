@@ -1,71 +1,112 @@
 package com.packsure.dto;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+
 public class OrderItemDTO {
+
+	private Long id;
 	
+	private Long product_id;
 	
-	@JsonProperty("product_id")
-	private Long itemId;
+	private String name;
 	
-	
-	@JsonProperty("name")
-	private String itemName;
-	
-	@JsonProperty("quantity")
 	private Integer quantity;
+
+//	private String  channel_order_product_id;
 	
-	@JsonProperty("price")
-	private Double pricePerUnit;
+	private Double price;
 	
-	@JsonProperty("selling_price")
-	private Double totalPrice;
+	private String status;
 	
-	@JsonProperty("channel_sku")
+	private String description;
+	
 	private String channel_sku;
 	
-	
-	public Long getItemId() {
-		return itemId;
+	private Double discount;
+
+	public Long getId() {
+		return id;
 	}
-	public void setItemId(Long itemId) {
-		this.itemId = itemId;
+
+	public void setId(Long id) {
+		this.id = id;
 	}
-	public String getItemName() {
-		return itemName;
+
+	public Long getProduct_id() {
+		return product_id;
 	}
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
+
+	public void setProduct_id(Long product_id) {
+		this.product_id = product_id;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public Integer getQuantity() {
 		return quantity;
 	}
+
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	public Double getPricePerUnit() {
-		return pricePerUnit;
+
+//	public String getChannel_order_product_id() {
+//		return channel_order_product_id;
+//	}
+//
+//	public void setChannel_order_product_id(String channel_order_product_id) {
+//		this.channel_order_product_id = channel_order_product_id;
+//	}
+
+	public Double getPrice() {
+		return price;
 	}
-	public void setPricePerUnit(Double pricePerUnit) {
-		this.pricePerUnit = pricePerUnit;
+
+	public void setPrice(Double price) {
+		this.price = price;
 	}
-	public Double getTotalPrice() {
-		return totalPrice;
+
+	public String getStatus() {
+		return status;
 	}
-	public void setTotalPrice(Double totalPrice) {
-		this.totalPrice = totalPrice;
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getChannel_sku() {
 		return channel_sku;
 	}
+
 	public void setChannel_sku(String channel_sku) {
 		this.channel_sku = channel_sku;
 	}
-	@Override
-	public String toString() {
-		return "OrderItemDTO [itemId=" + itemId + ", itemName=" + itemName + ", quantity=" + quantity
-				+ ", pricePerUnit=" + pricePerUnit + ", totalPrice=" + totalPrice + ", channel_sku=" + 
-				 "]";
+
+	public Double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Double discount) {
+		this.discount = discount;
 	}
 	
 	
+	
+	
+   
+
 }

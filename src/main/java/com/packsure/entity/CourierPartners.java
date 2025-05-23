@@ -12,7 +12,7 @@ public class CourierPartners {
 	private String name;
 
 	@Id
-	private String courierId;
+	private Long courierId;
 	
 	private String baseCourierId;
 	
@@ -26,11 +26,11 @@ public class CourierPartners {
 		this.name = name;
 	}
 
-	public String getCourierId() {
+	public Long getCourierId() {
 		return courierId;
 	}
 
-	public void setCourierId(String courierId) {
+	public void setCourierId(Long courierId) {
 		this.courierId = courierId;
 	}
 
@@ -50,7 +50,7 @@ public class CourierPartners {
 		this.masterCompany = masterCompany;
 	}
 
-	public CourierPartners(String name, String courierId, String baseCourierId, String masterCompany) {
+	public CourierPartners(String name, Long courierId, String baseCourierId, String masterCompany) {
 		super();
 		this.name = name;
 		this.courierId = courierId;

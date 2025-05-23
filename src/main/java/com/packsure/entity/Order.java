@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -23,10 +24,15 @@ public class Order {
 	private Long id;
 
 	private String customerName;
+	
 	private String customerEmail;
+	
 	private String customerPhone;
+	
 	private String customerAddress;
+	
 	private LocalDateTime orderDate;
+	
 	private String status;
 	
 	private LocalDateTime packedAt;
@@ -40,7 +46,7 @@ public class Order {
 	@JsonIgnore
 	private BarcodePool barcodepool;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonManagedReference
 	private List<OrderItem> items = new ArrayList<>();
 	
@@ -81,6 +87,24 @@ public class Order {
 	private Boolean confirmed;
 	
 	private int product_quantity;
+	
+	private String addressRisk;
+	
+	private String orderRisk;
+	
+	private String addressScore;
+	
+	private Double total;
+	
+	private Double tax;
+	
+	private String invoiceNo ;
+	
+	private LocalDateTime updateAt;
+	
+	
+	private String sukStatus;
+	
 	
 	
 
@@ -196,9 +220,6 @@ public class Order {
 		OrderType = orderType;
 	}
 	
-	
-
-	
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
@@ -255,7 +276,7 @@ public class Order {
 		this.deliverySource = deliverySource;
 	}
 	
-
+	
 
 	public String getPaymentType() {
 		return paymentType;
@@ -315,12 +336,80 @@ public class Order {
 		this.product_quantity = product_quantity;
 	}
 
+	public String getAddressRisk() {
+		return addressRisk;
+	}
+
+	public void setAddressRisk(String addressRisk) {
+		this.addressRisk = addressRisk;
+	}
+
+	public String getOrderRisk() {
+		return orderRisk;
+	}
+
+	public void setOrderRisk(String orderRisk) {
+		this.orderRisk = orderRisk;
+	}
+
+	public String getAddressScore() {
+		return addressScore;
+	}
+
+	public void setAddressScore(String addressScore) {
+		this.addressScore = addressScore;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	public Double getTax() {
+		return tax;
+	}
+
+	public void setTax(Double tax) {
+		this.tax = tax;
+	}
+
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
+
+	public LocalDateTime getUpdateAt() {
+		return updateAt;
+	}
+
+	public void setUpdateAt(LocalDateTime updateAt) {
+		this.updateAt = updateAt;
+	}
+
+
+	public String getSukStatus() {
+		return sukStatus;
+	}
+
+	public void setSukStatus(String sukStatus) {
+		this.sukStatus = sukStatus;
+	}
+
 	public Order(Long id, String customerName, String customerEmail, String customerPhone, String customerAddress,
 			LocalDateTime orderDate, String status, LocalDateTime packedAt, LocalDateTime dispatchedAt,
 			String orderType, BarcodePool barcodepool, List<OrderItem> items, String barcodeNumber, String orderStatus,
-			String orderSource, String deliverySource, String paymentType, String city, String state, String address2,
-			String country, String zipCode, String paymentStatus, String cancelReason, String rto_risk,
-			 Boolean confirmed, int product_quantity, String masterId) {
+			String orderSource, String deliverySource, String masterId, String paymentType, String city, String state,
+			String address2, String country, String zipCode, String paymentStatus, String cancelReason, String rto_risk,
+			Boolean confirmed, int product_quantity, String addressRisk, String orderRisk, String addressScore,
+			Double total, Double tax, String invoiceNo, LocalDateTime updateAt, 
+			String sukStatus
+			) {
 		super();
 		this.id = id;
 		this.customerName = customerName;
@@ -338,6 +427,7 @@ public class Order {
 		this.orderStatus = orderStatus;
 		this.orderSource = orderSource;
 		this.deliverySource = deliverySource;
+		this.masterId = masterId;
 		this.paymentType = paymentType;
 		this.city = city;
 		this.state = state;
@@ -349,7 +439,14 @@ public class Order {
 		this.rto_risk = rto_risk;
 		this.confirmed = confirmed;
 		this.product_quantity = product_quantity;
-		this.masterId = masterId;
+		this.addressRisk = addressRisk;
+		this.orderRisk = orderRisk;
+		this.addressScore = addressScore;
+		this.total = total;
+		this.tax = tax;
+		this.invoiceNo = invoiceNo;
+		this.updateAt = updateAt;
+		this.sukStatus = sukStatus;
 	}
 
 	public Order() {

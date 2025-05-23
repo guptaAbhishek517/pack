@@ -14,9 +14,9 @@ public class SchedulerConfig {
     @Autowired
     private OrderFetchService fetchService;
 
-    @Scheduled(fixedRate = 160000) // every 1 minute
+    @Scheduled(initialDelay = 1000,fixedDelay = 3600000) // every 1 minute
     public void fetchOrders() {
-        fetchService.fetchAndSaveOrders();
+        fetchService.fetchAndSaveOrders(0);
     }
 }
  

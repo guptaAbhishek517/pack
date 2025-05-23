@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "order_items")
@@ -37,7 +38,22 @@ public class OrderItem {
 	
 	private String channel_sku;
 	
-
+	
+	private Double mrp;
+	
+	
+	private Double cost;
+	
+	
+	private Double netTotal;
+	
+	
+	private String description;
+	
+	
+	private Double discount;
+	
+	private String channelOrderProductId;
 
 	public Long getId() {
 		return id;
@@ -104,8 +120,60 @@ public class OrderItem {
 		this.channel_sku = channel_sku;
 	}
 
+	public Double getMrp() {
+		return mrp;
+	}
+
+	public void setMrp(Double mrp) {
+		this.mrp = mrp;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public Double getNetTotal() {
+		return netTotal;
+	}
+
+	public void setNetTotal(Double netTotal) {
+		this.netTotal = netTotal;
+	}
+
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Double discount) {
+		this.discount = discount;
+	}
+
+	public String getChannelOrderProductId() {
+		return channelOrderProductId;
+	}
+
+	public void setChannelOrderProductId(String channelOrderProductId) {
+		this.channelOrderProductId = channelOrderProductId;
+	}
+
+	
+
 	public OrderItem(Long id, Order order, Long itemId, String itemName, Integer quantity, Double pricePerUnit,
-			Double totalPrice, LocalDateTime packedAt, LocalDateTime dispatchedAt, String orderId, String channel_sku) {
+			Double totalPrice, String channel_sku, Double mrp, Double cost, Double netTotal, String description,
+			Double discount, String channelOrderProductId) {
 		super();
 		this.id = id;
 		this.order = order;
@@ -115,7 +183,12 @@ public class OrderItem {
 		this.pricePerUnit = pricePerUnit;
 		this.totalPrice = totalPrice;
 		this.channel_sku = channel_sku;
-			
+		this.mrp = mrp;
+		this.cost = cost;
+		this.netTotal = netTotal;
+		this.description = description;
+		this.discount = discount;
+		this.channelOrderProductId = channelOrderProductId;
 	}
 
 	public OrderItem() {

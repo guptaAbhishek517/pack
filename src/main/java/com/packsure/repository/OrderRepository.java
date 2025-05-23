@@ -30,12 +30,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	Optional<Order> findOrderByBarcodeNumber(String barcodeNumber);
 	
 	@Query("SELECT o FROM Order o WHERE " +
-	           "LOWER(o.barcodeNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-	           "LOWER(o.customerName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-	           "LOWER(o.customerAddress) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-	           "LOWER(o.paymentType) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-	           "LOWER(o.status) LIKE LOWER(CONCAT('%', :search, '%'))")
-    Page<Order> searchOrders(@Param("search") String search, Pageable pageable);
+		       "(" +
+		       "LOWER(o.barcodeNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+		       "LOWER(o.customerName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+		       "LOWER(o.customerAddress) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+		       "LOWER(o.paymentType) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+		       "LOWER(o.status) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+		       "LOWER(o.rto_risk) LIKE LOWER(CONCAT('%', :search, '%'))" +
+		       ") " +
+		       "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
+		       "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
+		Page<Order> searchOrdersWithDate(
+		    @Param("search") String search,
+		    @Param("startDate") LocalDateTime startDate,
+		    @Param("endDate") LocalDateTime endDate,
+		    Pageable pageable);
 
 	
 	

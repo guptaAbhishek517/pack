@@ -2,15 +2,15 @@ package com.packsure.dto;
 
 public class DeliveryPartnerDTO {
 	
-	private String courierId;
+	private Long courierId;
 	
 	private String name;
 
-	public String getCourierId() {
+	public Long getCourierId() {
 		return courierId;
 	}
 
-	public void setCourierId(String courierId) {
+	public void setCourierId(Long courierId) {
 		this.courierId = courierId;
 	}
 
@@ -22,7 +22,7 @@ public class DeliveryPartnerDTO {
 		this.name = name;
 	}
 
-	public DeliveryPartnerDTO(String courierId, String name) {
+	public DeliveryPartnerDTO(Long courierId, String name) {
 		super();
 		this.courierId = courierId;
 		this.name = name;

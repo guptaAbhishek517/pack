@@ -1,5 +1,6 @@
 package com.packsure.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -42,28 +43,30 @@ public class OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
 		OrderDTO dto = new OrderDTO();
-		dto.setOrderId(order.getBarcodeNumber());
-		dto.setCustomerName(order.getCustomerName());
-		dto.setCustomerEmail(order.getCustomerEmail());
-		dto.setCustomerPhone(order.getCustomerPhone());
-		dto.setCustomerAddress(order.getCustomerAddress());
-		dto.setOrderDate(order.getOrderDate());
+		dto.setChannel_order_id(order.getBarcodeNumber());
+		dto.setCustomer_name(order.getCustomerName());
+		dto.setCustomer_email(order.getCustomerEmail());
+		dto.setCustomer_phone(order.getCustomerPhone());
+		dto.setCustomer_address(order.getCustomerAddress());
+		dto.setChannel_created_at(order.getOrderDate());
 		dto.setStatus(order.getStatus());
 		dto.setStatus(order.getOrderStatus());
 
 		List<OrderItemDTO> items = order.getItems().stream()
 			    .map(item -> {
 			        OrderItemDTO itemDTO = new OrderItemDTO();
-			        itemDTO.setItemId(item.getId());
-			        itemDTO.setItemName(item.getItemName());
+			        itemDTO.setProduct_id(item.getItemId());
+			        itemDTO.setName(item.getItemName());
 			        itemDTO.setQuantity(item.getQuantity());
-			        itemDTO.setPricePerUnit(item.getPricePerUnit());
-			        itemDTO.setTotalPrice(item.getTotalPrice());
+			        itemDTO.setPrice(item.getPricePerUnit());
+			        itemDTO.setDiscount(item.getDiscount());
+			        itemDTO.setDescription(item.getDescription());
+			        itemDTO.setChannel_sku(item.getChannel_sku());
 			        return itemDTO;
 			    })
 			    .collect(Collectors.toList());
 
-		dto.setItems(items);
+		dto.setProducts(items);
 		return dto;
 
 	}
@@ -73,19 +76,19 @@ public class OrderService {
 	@Transactional
 	public Order createOrderWithItems(OrderDTO orderDto) {
 		Order order = new Order();
-		order.setCustomerName(orderDto.getCustomerName());
-		order.setCustomerAddress(orderDto.getCustomerAddress());
-		order.setCustomerPhone(orderDto.getCustomerPhone());
+		order.setCustomerName(orderDto.getCustomer_name());
+		order.setCustomerAddress(orderDto.getCustomer_address());
+		order.setCustomerPhone(orderDto.getCustomer_phone());
 		order.setOrderDate(LocalDateTime.now());
 		order.setStatus(orderDto.getStatus());
 
 		// Step 1: Create OrderItems
-		List<OrderItem> orderItems = orderDto.getItems().stream().map(itemDto -> {
+		List<OrderItem> orderItems = orderDto.getProducts().stream().map(itemDto -> {
 			OrderItem item = new OrderItem();
-			item.setItemName(itemDto.getItemName());
+			item.setItemName(itemDto.getName());
 			item.setQuantity(itemDto.getQuantity());
-			item.setPricePerUnit(itemDto.getPricePerUnit());
-			item.setTotalPrice(itemDto.getQuantity() * itemDto.getPricePerUnit());
+			item.setPricePerUnit(itemDto.getPrice());
+			item.setTotalPrice(itemDto.getQuantity() *itemDto.getPrice());
 			item.setOrder(order);
 			return item;
 		}).collect(Collectors.toList());
@@ -110,54 +113,72 @@ public class OrderService {
 		return savedOrder;
 	}
 
-	public Page<OrderDTO> getAllOrders(Pageable pageable, String search) {
+	public Page<OrderDTO> getAllOrders(Pageable pageable, String search,LocalDate startDate,LocalDate endDate) {
 		Page<Order> ordersPage;
 		
-		if(search!=null && !search.trim().isEmpty()) {
-			ordersPage = orderRepository.searchOrders(search.trim(), pageable);
-		}
-		else {
-			ordersPage = orderRepository.findAll(pageable);
-		}
+		// convert LocalDate to LocalDateTime for comparison
+	    LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+	    LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
+		
+	    if (search != null && !search.trim().isEmpty()) {
+	        ordersPage = orderRepository.searchOrdersWithDate(search.trim(), startDateTime, endDateTime, pageable);
+	    } else {
+	        if (startDateTime != null || endDateTime != null) {
+	            // when search is empty but date filters are present
+	            ordersPage = orderRepository.searchOrdersWithDate("", startDateTime, endDateTime, pageable);
+	        } else {
+	            ordersPage = orderRepository.findAll(pageable);
+	        }
+	    }
 		
 		return ordersPage.map(order -> {
 			OrderDTO orderDTO = new OrderDTO();
-			orderDTO.setOrderId(order.getBarcodeNumber());
-			orderDTO.setOrderDate(order.getOrderDate());
-			orderDTO.setPaymentType(order.getPaymentType());
-			orderDTO.setCustomerName(order.getCustomerName());
-			orderDTO.setCustomerAddress(order.getCustomerAddress());
-			orderDTO.setCustomerPhone(order.getCustomerPhone());
+			orderDTO.setChannel_order_id(order.getBarcodeNumber());
+			orderDTO.setChannel_created_at(order.getOrderDate());
+			orderDTO.setPayment_method(order.getPaymentType());
+			orderDTO.setCustomer_name(order.getCustomerName());
+			orderDTO.setCustomer_address(order.getCustomerAddress());
+			orderDTO.setCustomer_phone(order.getCustomerPhone());
 			orderDTO.setStatus(order.getStatus());
 			orderDTO.setPackedAt(order.getPackedAt());
-			orderDTO.setDispatchedAt(order.getDispatchedAt());
-			orderDTO.setOrderSource(order.getOrderSource());
+			orderDTO.setDispactchedAt(order.getDispatchedAt());
+			orderDTO.setChannel_name(order.getOrderSource());
 			orderDTO.setOrderStatus(order.getOrderStatus());
 			orderDTO.setDeliverySource(order.getDeliverySource());
-			orderDTO.setOrderSource(order.getOrderSource());
-			orderDTO.setPaymentType(order.getPaymentType());
-			orderDTO.setPaymentStatus(order.getPaymentStatus());
-		    orderDTO.setCity(order.getCity());	
-		    orderDTO.setState(order.getState());
-		    orderDTO.setAddress2(order.getAddress2());
-    	    orderDTO.setCountry(order.getCountry());
-    	    orderDTO.setZipCode(order.getZipCode());
+			orderDTO.setChannel_name(order.getOrderSource());
+			orderDTO.setPayment_method(order.getPaymentType());
+			orderDTO.setPayment_status(order.getPaymentStatus());
+		    orderDTO.setCustomer_city(order.getCity());	
+		    orderDTO.setCustomer_state(order.getState());
+		    orderDTO.setCustomer_address2(order.getAddress2());
+    	    orderDTO.setCustomer_country(order.getCountry());
+    	    orderDTO.setCustomer_pincode(order.getZipCode());
 		    orderDTO.setRto_risk(order.getRto_risk());
-		    System.out.println(order.getZipCode());
+		    orderDTO.setTotal(order.getTotal());
+		    orderDTO.setTax(order.getTax());
+		    orderDTO.setUpdated_at(order.getUpdateAt());
+		    orderDTO.setSukStatus(order.getSukStatus());
 			return orderDTO;
 		});
 	}
 
-	public Order getOrderByBarcode(String barcode) {
+	public Order getOrderByBarcode(String barcode) throws Exception {
 
 		Order order = orderRepository.findByBarcodeNumber(barcode);
+		
+		if(!order.getOrderStatus().equalsIgnoreCase("Confirm")) {
+			throw new RuntimeException("Order is Not Yet Confirmed.");
+		}
+		if(order.getOrderStatus().equalsIgnoreCase("Cancel")) {
+			throw new RuntimeException("Order is Canceled");
+		}
 
-		if ("PACKED".equalsIgnoreCase(order.getStatus())) {
-			throw new BarcodeAlreadyPackedException("Order is already packed for this barcode.");
+		if ("PACKED".equalsIgnoreCase(order.getSukStatus())) {
+			throw new RuntimeException("Order is already packed for this barcode.");
 		}
 		
-		if("DISPATCHED".equalsIgnoreCase(order.getStatus())){
-			throw new BarcodeAlreadyPackedException("Order is already dispatched for this barcode.");
+		if("DISPATCHED".equalsIgnoreCase(order.getSukStatus())){
+			throw new RuntimeException("Order is already dispatched for this barcode.");
 		}
 
 		return order; // Fetch the order linked to the barcode
@@ -167,11 +188,11 @@ public class OrderService {
 
 		Order order = orderRepository.findByBarcodeNumber(barcode);
 
-		if ("PACKED".equalsIgnoreCase(order.getStatus())) {
+		if ("PACKED".equalsIgnoreCase(order.getSukStatus())) {
 			throw new IllegalStateException("Order is already packed");
 		}
 
-		order.setStatus("PACKED");
+		order.setSukStatus("PACKED");
 		order.setPackedAt(LocalDateTime.now());
 		orderRepository.save(order);
 	}
@@ -186,14 +207,14 @@ public class OrderService {
 	        return response;
 	    }
 
-	    String currentStatus = order.getStatus();
+	    String currentStatus = order.getSukStatus();
 	    
-		if("DISPATCHED".equalsIgnoreCase(order.getStatus())){
+		if("DISPATCHED".equalsIgnoreCase(order.getSukStatus())){
 			throw new BarcodeAlreadyDispatchedException("Order is already dispatched for this barcode.");
 		}
 
 	    if ("PACKED".equalsIgnoreCase(currentStatus)) {
-	        order.setStatus("DISPATCHED");
+	        order.setSukStatus("DISPATCHED");
 	        order.setDispatchedAt(LocalDateTime.now());
 	        orderRepository.save(order);
 
@@ -211,12 +232,19 @@ public class OrderService {
 		// TODO Auto-generated method stub
 		Order order = orderRepository.findByBarcodeNumber(barcode);
 		
-		if ("DISPATCHED".equalsIgnoreCase(order.getStatus())) {
-			throw new BarcodeAlreadyDispatchedException("Order is already packed for this barcode.");
+		if(!order.getOrderStatus().equalsIgnoreCase("Confirm")) {
+			throw new RuntimeException("Order is Not Yet Confirmed.");
+		}
+		if(order.getOrderStatus().equalsIgnoreCase("Cancel")) {
+			throw new RuntimeException("Order is Canceled");
 		}
 		
-		if("PENDING".equalsIgnoreCase(order.getStatus())){
-			throw new BarcodeAlreadyPackedException("Order is not packed yet.");
+		if("PENDING".equalsIgnoreCase(order.getSukStatus())){
+			throw new RuntimeException("Order is not packed yet.");
+		}
+		
+		if ("DISPATCHED".equalsIgnoreCase(order.getSukStatus())) {
+			throw new RuntimeException("Order is already dispatched for this barcode.");
 		}
 
 		return order; // Fetch the order linked to the barcode
@@ -255,32 +283,32 @@ public class OrderService {
 	}
 
 	
-	public List<Order> saveAllOrders(List<OrderDTO> orderDTOs) {
-	    List<Order> newOrders = orderDTOs.stream()
-	        .filter(dto -> !orderRepository.existsByBarcodeNumber(dto.getBarcodeNumber()))
-	        .map(dto -> {
-	            Order order = new Order();
-//	            order.setOrderId(dto.getBarcodeNumber());
-	            order.setBarcodeNumber(dto.getBarcodeNumber());
-	            order.setCustomerName(dto.getCustomerName());
-	            order.setCustomerEmail(dto.getCustomerEmail());
-	            order.setCustomerPhone(dto.getCustomerPhone());
-	            order.setCustomerAddress(dto.getCustomerAddress());
-	            order.setOrderDate(dto.getOrderDate());
-	            order.setStatus(dto.getStatus());
-	            order.setPackedAt(dto.getPackedAt());
-	            order.setDispatchedAt(dto.getDispatchedAt());
-	            order.setOrderType(dto.getOrderType());
-	            order.setOrderStatus(dto.getOrderStatus());
-	            order.setOrderSource(dto.getOrderSource());
-	            order.setPaymentType(dto.getPaymentType());
-	            order.setDeliverySource(dto.getDeliverySource());
-	            return order;
-	        })
-	        .collect(Collectors.toList());
-
-	    return orderRepository.saveAll(newOrders);
-	}
+//	public List<Order> saveAllOrders(List<OrderDTO> orderDTOs) {
+//	    List<Order> newOrders = orderDTOs.stream()
+//	        .filter(dto -> !orderRepository.existsByBarcodeNumber(dto.getBarcodeNumber()))
+//	        .map(dto -> {
+//	            Order order = new Order();
+////	            order.setOrderId(dto.getBarcodeNumber());
+//	            order.setBarcodeNumber(dto.getBarcodeNumber());
+//	            order.setCustomerName(dto.getCustomerName());
+//	            order.setCustomerEmail(dto.getCustomerEmail());
+//	            order.setCustomerPhone(dto.getCustomerPhone());
+//	            order.setCustomerAddress(dto.getCustomerAddress());
+//	            order.setOrderDate(dto.getOrderDate());
+//	            order.setStatus(dto.getStatus());
+//	            order.setPackedAt(dto.getPackedAt());
+//	            order.setDispatchedAt(dto.getDispatchedAt());
+//	            order.setOrderType(dto.getOrderType());
+//	            order.setOrderStatus(dto.getOrderStatus());
+//	            order.setOrderSource(dto.getOrderSource());
+//	            order.setPaymentType(dto.getPaymentType());
+//	            order.setDeliverySource(dto.getDeliverySource());
+//	            return order;
+//	        })
+//	        .collect(Collectors.toList());
+//
+//	    return orderRepository.saveAll(newOrders);
+//	}
 
 
 	
